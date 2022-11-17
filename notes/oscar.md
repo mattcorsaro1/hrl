@@ -7,6 +7,18 @@
 ## File storage
 `~/scratch` is deleted after 30 days, `~/data/mcorsaro` is for long-term storage. Check with `myquota`.
 
+# Setup hrl on the cluster
+(This will be tested and moved to README.md)
+Start with rainbow setup/virtualenv
+
+git clone git@github.com:mattcorsaro1/hrl.git
+cd hrl
+git checkout matt/init-robot
+submodule update --init --recursive
+cd rainbow_RBFDQN
+pip install .
+pip freeze | grep rainbow
+
 # Running hrl on the cluster (new)
 
 # Running rainbow on the cluster (old)
