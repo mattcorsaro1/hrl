@@ -17,6 +17,8 @@ from hrl.agent.dsc.classifier.mlp_classifier import BinaryMLPClassifier
 
 warnings.filterwarnings("ignore")
 
+RESULT_DIR = "/users/mcorsaro/scratch/"
+
 class DistributionalCriticClassifier(PositionInitiationClassifier):
 
     def __init__(
@@ -224,7 +226,7 @@ class DistributionalCriticClassifier(PositionInitiationClassifier):
             plt.scatter(x[len(pos_egs):], y[len(pos_egs):], c=s[len(pos_egs):])
             plt.colorbar()
             plt.clim((0, 10))
-            plt.savefig(f"results/weight_plots_{self.option_name}.png")
+            plt.savefig(f"{RESULT_DIR}/results/weight_plots_{self.option_name}.png")
             plt.close()
 
         return weights
@@ -308,7 +310,7 @@ class DistributionalCriticClassifier(PositionInitiationClassifier):
 
         plt.suptitle(f"{option_name}")
         file_name = f"{option_name}_critic_init_clf_{seed}_episode_{episode}"
-        saving_path = os.path.join('results', experiment_name, 'initiation_set_plots', f'{file_name}.png')
+        saving_path = os.path.join(RESULT_DIR, 'results', experiment_name, 'initiation_set_plots', f'{file_name}.png')
 
         print("saving")
         plt.savefig(saving_path)

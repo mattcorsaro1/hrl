@@ -7,6 +7,7 @@ from collections import deque
 from hrl.agent.dsc.utils import *
 from hrl.agent.dsc.MBOptionClass import ModelBasedOption
 
+RESULT_DIR = "/users/mcorsaro/scratch/"
 
 class RobustDSC(object):
     def __init__(self, mdp, warmup_episodes, max_steps, gestation_period, buffer_length, use_vf, use_global_vf, use_model,
@@ -136,7 +137,7 @@ class RobustDSC(object):
             self.log[episode]["success"] = success
             self.log[episode]["step-count"] = step_count[0]
 
-            with open(f"results/{self.experiment_name}/log_file_{self.seed}.pkl", "wb+") as log_file:
+            with open(f"{RESULT_DIR}/results/{self.experiment_name}/log_file_{self.seed}.pkl", "wb+") as log_file:
                 pickle.dump(self.log, log_file)
 
     def learn_dynamics_model(self, epochs=50, batch_size=1024):

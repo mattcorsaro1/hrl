@@ -11,6 +11,7 @@ from .flipping_classifier import FlippingClassifier
 from .critic_classifier import CriticInitiationClassifier
 from .position_classifier import PositionInitiationClassifier
 
+RESULT_DIR = "/users/mcorsaro/scratch/"
 
 class CriticBayesClassifier(PositionInitiationClassifier):
     def __init__(
@@ -216,7 +217,7 @@ class CriticBayesClassifier(PositionInitiationClassifier):
 
             name = option_name if episode is None else option_name + f"_{experiment_name}_{episode}"
             plt.title(f"{option_name} Initiation Set")
-            saving_path = os.path.join('results', experiment_name, 'initiation_set_plots', f'{name}_initiation_classifier_{seed}.png')
+            saving_path = os.path.join(RESULT_DIR, 'results', experiment_name, 'initiation_set_plots', f'{name}_initiation_classifier_{seed}.png')
             plt.savefig(saving_path)
             plt.close()
 
@@ -252,7 +253,7 @@ class CriticBayesClassifier(PositionInitiationClassifier):
         plt.title("Orginally Negative")
 
         plt.suptitle(f"{self.option_name} Flip Labels")
-        plt.savefig(f"results/critic_clf_resample_goals/initiation_set_plots/{self.option_name}_flip_labels.png")
+        plt.savefig(f"{RESULT_DIR}/results/critic_clf_resample_goals/initiation_set_plots/{self.option_name}_flip_labels.png")
         plt.close()
     
     def plot_flipping_probabilities(self, examples, assigned_labels, old_vf_labels, new_vf_labels, probs):
@@ -296,5 +297,5 @@ class CriticBayesClassifier(PositionInitiationClassifier):
         plt.scatter(neg_x_positions, neg_y_positions, c=neg_probs, marker="o", s=20); plt.colorbar()
 
         plt.title(f"Flipping Probs")
-        plt.savefig(f"results/critic_clf_resample_goals/initiation_set_plots/{self.option_name}_flipper.png")
+        plt.savefig(f"{RESULT_DIR}/results/critic_clf_resample_goals/initiation_set_plots/{self.option_name}_flipper.png")
         plt.close()

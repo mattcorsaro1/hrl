@@ -8,6 +8,7 @@ from hrl.agent.td3.TD3AgentClass import TD3
 from ..datastructures import ValueThresholder
 from .critic_classifier import CriticInitiationClassifier
 
+RESULT_DIR = "/users/mcorsaro/scratch/"
 
 class OPECriticInitiationClassifier(CriticInitiationClassifier):
     """ Initiation Classifier that thresholds V^pi. """
@@ -108,7 +109,7 @@ class OPECriticInitiationClassifier(CriticInitiationClassifier):
 
         file_name = f"{option_name}_ope_critic_init_clf_{seed}_episode_{episode}"
         plt.title(f"OPE VF for {option_name}")
-        saving_path = os.path.join('results', experiment_name, 'initiation_set_plots', f'{file_name}.png')
+        saving_path = os.path.join(RESULT_DIR, 'results', experiment_name, 'initiation_set_plots', f'{file_name}.png')
 
         print("saving")
         plt.savefig(saving_path)

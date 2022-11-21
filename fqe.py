@@ -15,6 +15,8 @@ import pdb
 
 import argparse
 
+RESULT_DIR = "/users/mcorsaro/scratch/"
+
 class QFitter(nn.Module):
     def __init__(self, state_dim, action_dim):
         super().__init__()
@@ -140,10 +142,10 @@ class FQE:
 
         for iteration in range(num_iter):
             print('Iteration: {}'.format(iteration))
-            loss_save_fname = 'saved_results/{}/loss_iter_{}.pkl'.format(self.exp_name, iteration)
+            loss_save_fname = '{}/saved_results/{}/loss_iter_{}.pkl'.format(RESULT_DIR, self.exp_name, iteration)
             self.optimize_model(gamma, batch_size, num_batches, oversample_goal, save_fname=loss_save_fname, no_bootstrap_within_iteration=no_bootstrap_within_iteration)
             if (save_interval < np.inf and iteration % save_interval == 0) or iteration == num_iter-1:
-                torch.save(self.q_fitter.state_dict(), "saved_results/{}/weights_{}".format(self.exp_name, iteration))
+                torch.save(self.q_fitter.state_dict(), "{}/saved_results/{}/weights_{}".format(RESULT_DIR, self.exp_name, iteration))
 
     def get_values(self, state):
         next_action = self.pi_eval(state)
@@ -187,8 +189,8 @@ if __name__ == '__main__':
     state_dim = data["state"].shape[1]
     action_dim = data["action"].shape[1]
 
-    if not os.path.exists('saved_results/{}/'.format(exp_name)):
-        os.makedirs('saved_results/{}/'.format(exp_name))
+    if not os.path.exists('{}/saved_results/{}/'.format(RESULT_DIR, exp_name)):
+        os.makedirs('{}/saved_results/{}/'.format(RESULT_DIR, exp_name))
 
     if args.move_goal:
         def termination_indicator(next_state):
@@ -212,7 +214,7 @@ if __name__ == '__main__':
             oversample_goal=args.oversample_goal,
             no_bootstrap_within_iteration=args.no_bootstrap_within_iteration)
 
-    with open('saved_results/{}/args.txt'.format(exp_name), 'w') as f:
+    with open('{}/saved_results/{}/args.txt'.format(RESULT_DIR, exp_name), 'w') as f:
         for arg in vars(args):
             f.write("{}: {}".format(arg, getattr(args, arg)))
             f.write("\n")

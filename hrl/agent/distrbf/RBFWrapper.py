@@ -11,6 +11,8 @@ from rainbow_RBFDQN.rainbow.dis import Net as DistributionalNets
 
 import sys
 
+RESULT_DIR = "/users/mcorsaro/scratch/"
+
 class RBFWrapper(object):
     def __init__(
             self,
@@ -165,7 +167,7 @@ class RBFWrapper(object):
 
         plt.suptitle(f"{option_name}")
         file_name = f"{option_name}_critic_init_clf_{seed}_episode_{episode}"
-        saving_path = os.path.join('results', experiment_name, 'initiation_set_plots', f'{file_name}.png')
+        saving_path = os.path.join(RESULT_DIR, 'results', experiment_name, 'initiation_set_plots', f'{file_name}.png')
 
         print("saving")
         plt.savefig(saving_path)

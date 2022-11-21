@@ -8,6 +8,7 @@ from collections import deque
 from hrl.agent.dsc.utils import *
 from hrl.agent.dsc.MBOptionClass import ModelBasedOption
 
+RESULT_DIR = "/users/mcorsaro/scratch/"
 
 class RobustDST(object):
     def __init__(self, mdp, warmup_episodes, gestation_period, buffer_length,
@@ -246,7 +247,7 @@ class RobustDST(object):
             self.log[episode]["success"] = success
             self.log[episode]["step-count"] = step_count[0]
 
-            with open(f"results/{self.experiment_name}/log_file_{self.seed}.pkl", "wb+") as log_file:
+            with open(f"{RESULT_DIR}/results/{self.experiment_name}/log_file_{self.seed}.pkl", "wb+") as log_file:
                 pickle.dump(self.log, log_file)
 
     def log_status(self, episode, last_10_durations):

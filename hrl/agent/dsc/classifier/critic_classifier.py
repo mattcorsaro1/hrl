@@ -9,6 +9,7 @@ from collections import deque
 from .init_classifier import InitiationClassifier
 from ..datastructures import TrainingExample, StepThresholder
 
+RESULT_DIR = "/users/mcorsaro/scratch/"
 
 class CriticInitiationClassifier(InitiationClassifier):
     """ Initiation Classifier that thresholds the current critic. """
@@ -183,7 +184,7 @@ class CriticInitiationClassifier(InitiationClassifier):
 
         plt.suptitle(f"{option_name}")
         file_name = f"{option_name}_critic_init_clf_{seed}_episode_{episode}"
-        saving_path = os.path.join('results', experiment_name, 'initiation_set_plots', f'{file_name}.png')
+        saving_path = os.path.join(RESULT_DIR, 'results', experiment_name, 'initiation_set_plots', f'{file_name}.png')
 
         print("saving")
         plt.savefig(saving_path)

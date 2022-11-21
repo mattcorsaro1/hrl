@@ -11,6 +11,7 @@ from sklearn.svm import OneClassSVM, SVC
 from .init_classifier import InitiationClassifier
 from hrl.agent.dsc.datastructures import TrainingExample
 
+RESULT_DIR = "/users/mcorsaro/scratch/"
 
 class PositionInitiationClassifier(InitiationClassifier):
     def __init__(self, maxlen=100):
@@ -243,7 +244,7 @@ class PositionInitiationClassifier(InitiationClassifier):
 
             name = option_name if episode is None else option_name + f"_{experiment_name}_{episode}"
             plt.title(f"{option_name} Initiation Set")
-            saving_path = os.path.join('results', experiment_name, 'initiation_set_plots', f'{name}_initiation_classifier_{seed}.png')
+            saving_path = os.path.join(RESULT_DIR, 'results', experiment_name, 'initiation_set_plots', f'{name}_initiation_classifier_{seed}.png')
             plt.savefig(saving_path)
             plt.close()
 
