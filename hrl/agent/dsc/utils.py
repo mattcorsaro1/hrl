@@ -267,7 +267,7 @@ def plot_value_distribution(solver, state, goal, episode, option_name, seed, exp
     plt.xlabel("Expected Number of Steps to Goal")
     plt.title(f"Episode {episode} Goal {np.round(goal, 2)}")
     fname = f"{option_name}_value_dist{seed}_episode_{episode}.png"
-    saving_path = os.path.join('~/scratch/results', experiment_name, 'value_function_plots', f'{fname}')
+    saving_path = os.path.join('/users/mcorsaro/scratch/results', experiment_name, 'value_function_plots', f'{fname}')
     print("Saving in", saving_path)
     plt.savefig(saving_path)
     plt.close()
