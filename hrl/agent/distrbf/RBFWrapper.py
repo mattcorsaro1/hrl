@@ -7,7 +7,7 @@ from common import utils, utils_for_q_learning
 from hrl.agent.td3.replay_buffer import ReplayBuffer
 from hrl.agent.td3.model import Actor, Critic, NormActor
 from hrl.agent.td3.utils import *
-from rainbow.dis import Net as DistributionalNets
+from rainbow_RBFDQN.rainbow.dis import Net as DistributionalNets
 
 import sys
 
