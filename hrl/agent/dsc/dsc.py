@@ -222,7 +222,8 @@ class RobustDSC(object):
                 #         self.seed
                 #     )
                 
-                plot_two_class_classifier(option, episode_label, self.experiment_name, seed=self.seed)
+                # (mcorsaro) commenting this out
+                #plot_two_class_classifier(option, episode_label, self.experiment_name, seed=self.seed)
                 plot_importance_weights(episode_label, 
                                           option.initiation_classifier.threshold, 
                                           option, 
