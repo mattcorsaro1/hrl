@@ -1,22 +1,14 @@
+import argparse
 import numpy as np
 from copy import deepcopy
+import seeding
+import gym
+import d4rl
+import torch
 from hrl.utils import create_log_dir
 from hrl.agent.td3.TD3AgentClass import TD3
 from hrl.agent.td3.utils import make_chunked_value_function_plot
-from hrl.mdp.d4rl_ant_maze.D4RLAntMazeMDPClass import D4RLAntMazeMDP
-
-
-EPISODES_PER_GOAL = 100
-EXPERIMENT_NAME = "vanilla-td3-curriculum-umaze"
-
-
-def curriculum_goal(episode):
-    waypoints = [(2, 0), (4, 0), (6, 0), (8, 0),
-                 (8, 2), (8, 4), (8, 6), (8, 8),
-                 (6, 8), (4, 8), (2, 8), (0, 8)]
-    idx = min(episode // EPISODES_PER_GOAL, len(waypoints) - 1)
-    return waypoints[idx]
-
+from hrl.wrappers.antmaze_wrapper import D4RLAntMazeWrapper
 
 def experience_replay(agent, mdp, trajectory, goal):
     for state, action, _, next_state in trajectory:
@@ -44,9 +36,47 @@ def rollout(agent, mdp, goal, steps):
 
     return score, trajectory
 
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--experiment_name", type=str, help="Experiment Name")
+    parser.add_argument("--results_dir", type=str, default='results',
+                        help='the name of the directory used to store results')
+    parser.add_argument("--device", type=str, help="cpu/cuda:0/cuda:1")
+    parser.add_argument("--environment", type=str, choices=["antmaze-umaze-v0", "antmaze-medium-play-v0", "antmaze-large-play-v0"], 
+                        help="name of the gym environment")
+    parser.add_argument("--seed", type=int, help="Random seed")
 
-def training_loop(num_episodes, num_steps):
-    mdp = D4RLAntMazeMDP("umaze", goal_state=np.array((0, 8)), seed=0)
+    parser.add_argument("--use_dense_rewards", action="store_true", default=False)
+    parser.add_argument("--buffer_length", type=int, default=50)
+    parser.add_argument("--episodes", type=int, default=150)
+    parser.add_argument("--steps", type=int, default=1000)
+    parser.add_argument("--logging_frequency", type=int, default=50, help="Plot after every _ episodes")
+
+    parser.add_argument("--goal_state", nargs="+", type=float, default=[0, 8],
+                        help="specify the goal state of the environment, (0, 8) for example")
+    args = parser.parse_args()
+
+    # TODO(mcorsaro): Add additional parameters (learning rate, use HER, HER parameters, num episodes)
+    # TODO(mcorsaro): Implement HER correctly
+    # TODO(mcorsaro): Use all parameters (logging_frequency)
+
+    saving_dir = os.path.join(args.results_dir, args.experiment_name)
+    create_log_dir(saving_dir)
+
+    env = gym.make(args.environment)
+    # pick a goal state for the env
+    goal_state = np.array(args.goal_state)
+    mdp = D4RLAntMazeWrapper(
+        env,
+        start_state=np.array((0, 0)),
+        goal_state=goal_state,
+        #init_truncate="position" in args.init_classifier_type,
+        use_dense_reward=args.use_dense_rewards
+    )
+
+    torch.manual_seed(0)
+    seeding.seed(0, random, np)
+    seeding.seed(args.seed, gym, env)
 
     agent = TD3(state_dim=mdp.state_space_size(),
                 action_dim=mdp.action_space_size(),
@@ -55,21 +85,13 @@ def training_loop(num_episodes, num_steps):
 
     per_episode_scores = []
 
-    for episode in range(num_episodes):
+    for episode in range(args.episodes):
         mdp.reset()
-        goal = curriculum_goal(episode)
-        score, trajectory = rollout(agent, mdp, goal, num_steps)
+        goal = goal_state
+        score, trajectory = rollout(agent, mdp, goal, args.steps)
         experience_replay(agent, mdp, trajectory, goal)
 
         per_episode_scores.append(score)
-        print(f"Episode: {episode} | Goal: {goal} | Score: {score}")
-        if episode > 0 and episode % EPISODES_PER_GOAL == 0:
-             make_chunked_value_function_plot(agent, episode, 0, EXPERIMENT_NAME)
-
-    return per_episode_scores
-
-
-if __name__ == "__main__":
-    create_log_dir("value_function_plots")
-    create_log_dir(f"value_function_plots/{EXPERIMENT_NAME}")
-    pes = training_loop(num_episodes=EPISODES_PER_GOAL*12, num_steps=1000)
+        print(f"Episode: {episode} | Score: {score}")
+        if episode > 0 and episode % 100 == 0:
+            make_chunked_value_function_plot(agent, episode, 0, saving_dir)
