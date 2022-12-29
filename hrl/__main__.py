@@ -24,16 +24,16 @@ def extract_goal_dimensions(mdp, goal):
         return _extract(goal)
     return goal.pos
 
-def get_augmented_state(state, goal):
+def get_augmented_state(state, goal, mdp):
     assert goal is not None and isinstance(goal, np.ndarray), f"goal is {goal}"
 
-    goal_position = extract_goal_dimensions(goal)
+    goal_position = extract_goal_dimensions(mdp, goal)
     return np.concatenate((state, goal_position))
 
 def experience_replay(agent, mdp, trajectory, goal):
     for state, action, _, next_state in trajectory:
         reward, done = mdp.sparse_gc_reward_func(next_state, goal)
-        agent.step(get_augmented_state(state, goal), action, reward, get_augmented_state(next_state, goal), done)
+        agent.step(get_augmented_state(state, goal, mdp), action, reward, get_augmented_state(next_state, goal, mdp), done)
 
 def rollout(agent, mdp, goal, steps):
     score = 0.
