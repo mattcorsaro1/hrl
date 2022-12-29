@@ -23,7 +23,7 @@ def load(td3_agent, filename):
     td3_agent.actor_target = copy.deepcopy(td3_agent.actor)
 
 
-def make_chunked_value_function_plot(solver, episode, seed, experiment_name, chunk_size=1000, replay_buffer=None):
+def make_chunked_value_function_plot(solver, episode, seed, filepath, chunk_size=1000, replay_buffer=None):
     replay_buffer = replay_buffer if replay_buffer is not None else solver.replay_buffer
     states = np.array([exp[0] for exp in replay_buffer])
     actions = np.array([exp[1] for exp in replay_buffer])
@@ -50,7 +50,7 @@ def make_chunked_value_function_plot(solver, episode, seed, experiment_name, chu
     plt.scatter(states[:, 0], states[:, 1], c=qvalues)
     plt.colorbar()
     file_name = f"{solver.name}_value_function_seed_{seed}_episode_{episode}"
-    plt.savefig(f"value_function_plots/{experiment_name}/{file_name}.png")
+    plt.savefig(f"{filepath}/{file_name}.png")
     plt.close()
 
     return qvalues.max()
