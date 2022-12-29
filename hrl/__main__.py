@@ -14,11 +14,26 @@ from hrl.agent.td3.TD3AgentClass import TD3
 from hrl.agent.td3.utils import make_chunked_value_function_plot
 from hrl.wrappers.antmaze_wrapper import D4RLAntMazeWrapper
 
+def extract_goal_dimensions(mdp, goal):
+    def _extract(goal):
+        goal_features = goal
+        if "ant" in mdp.unwrapped.spec.id:
+            return goal_features[:2]
+        raise NotImplementedError(f"{mdp.env_name}")
+    if isinstance(goal, np.ndarray):
+        return _extract(goal)
+    return goal.pos
+
+def get_augmented_state(state, goal):
+    assert goal is not None and isinstance(goal, np.ndarray), f"goal is {goal}"
+
+    goal_position = extract_goal_dimensions(goal)
+    return np.concatenate((state, goal_position))
+
 def experience_replay(agent, mdp, trajectory, goal):
     for state, action, _, next_state in trajectory:
         reward, done = mdp.sparse_gc_reward_func(next_state, goal)
-        agent.step(state, action, reward, next_state, done)
-
+        agent.step(get_augmented_state(state, goal), action, reward, get_augmented_state(next_state, goal), done)
 
 def rollout(agent, mdp, goal, steps):
     score = 0.
