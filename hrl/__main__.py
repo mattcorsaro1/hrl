@@ -1,25 +1,44 @@
-import time
+import argparse
+import numpy as np
+from copy import deepcopy
 import os
 import random
-import argparse
+import sys
 
+import seeding
 import gym
 import d4rl
 import torch
-import seeding
-import numpy as np
-import sys
-
-from hrl.wrappers.antmaze_wrapper import D4RLAntMazeWrapper
 from hrl.utils import create_log_dir
-from hrl.agent.dsc.dsc import RobustDSC
-from hrl.agent.dsc.dst import RobustDST
-from hrl.agent.dsc.classifier.mlp_classifier import BinaryMLPClassifier
+from hrl.agent.td3.TD3AgentClass import TD3
+from hrl.agent.td3.utils import make_chunked_value_function_plot
+from hrl.wrappers.antmaze_wrapper import D4RLAntMazeWrapper
 
-'''
-interact -g 1 -q 3090-gcondo -m 40G -n 4 -t 2:00:00
-python -m hrl  --experiment_name test --results_dir results --device 'cuda:0' --environment antmaze-umaze-v0 --seed 0 --use_value_function --use_global_value_function --episodes 1000 --use_diverse_starts --use_global_option_subgoals --init_classifier_type dist-clf  --lr_c 3e-4 --lr_a 3e-4 --logging_frequency 5 --agent rbf --gestation_period 2
-'''
+def experience_replay(agent, mdp, trajectory, goal):
+    for state, action, _, next_state in trajectory:
+        reward, done = mdp.sparse_gc_reward_function(next_state, goal, info={})
+        agent.step(state.features(), action, reward, next_state.features(), done)
+
+
+def rollout(agent, mdp, goal, steps):
+    score = 0.
+    mdp.reset()
+    trajectory = []
+
+    for step in range(steps):
+        state = deepcopy(mdp.cur_state)
+        action = agent.act(state.features())
+
+        _, next_state = mdp.execute_agent_action(action)
+        reward, done = mdp.sparse_gc_reward_function(next_state, goal, info={})
+
+        score = score + reward
+        trajectory.append((state, action, reward, next_state))
+
+        if done:
+            break
+
+    return score, trajectory
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -31,111 +50,52 @@ if __name__ == "__main__":
                         help="name of the gym environment")
     parser.add_argument("--seed", type=int, help="Random seed")
 
-    parser.add_argument("--gestation_period", type=int, default=3)
+    parser.add_argument("--use_dense_rewards", action="store_true", default=False)
     parser.add_argument("--buffer_length", type=int, default=50)
     parser.add_argument("--episodes", type=int, default=150)
     parser.add_argument("--steps", type=int, default=1000)
-    parser.add_argument("--warmup_episodes", type=int, default=5)
-    parser.add_argument("--use_value_function", action="store_true", default=False)
-    parser.add_argument("--use_global_value_function", action="store_true", default=False)
-    parser.add_argument("--use_model", action="store_true", default=False)
-    parser.add_argument("--multithread_mpc", action="store_true", default=False)
-    parser.add_argument("--use_diverse_starts", action="store_true", default=False)
-    parser.add_argument("--use_dense_rewards", action="store_true", default=False)
-    parser.add_argument("--logging_frequency", type=int, default=50, help="Draw init sets, etc after every _ episodes")
-    parser.add_argument("--generate_init_gif", action="store_true", default=False)
-    parser.add_argument("--evaluation_frequency", type=int, default=10)
+    parser.add_argument("--logging_frequency", type=int, default=50, help="Plot after every _ episodes")
 
-    parser.add_argument("--goal_state", nargs="+", type=float, default=[],
+    parser.add_argument("--goal_state", nargs="+", type=float, default=[0, 8],
                         help="specify the goal state of the environment, (0, 8) for example")
-    parser.add_argument("--use_global_option_subgoals", action="store_true", default=False)
-    parser.add_argument("--lr_c", type=float, help="critic learning rate")
-    parser.add_argument("--lr_a", type=float, help="actor learning rate")
-    parser.add_argument("--use_skill_trees", action="store_true", default=False)
-    parser.add_argument("--max_num_children", type=int, default=1, help="Max number of children per option in the tree")
-
-    parser.add_argument("--agent_type", type=str, default="td3")
-    
-    # Off policy init learning configs
-    parser.add_argument("--init_classifier_type", type=str, default="position-clf")
-    parser.add_argument("--optimistic_threshold", type=float, default=40)
-    parser.add_argument("--pessimistic_threshold", type=float, default=20)
     args = parser.parse_args()
 
-    assert args.use_model or args.use_value_function
+    # TODO(mcorsaro): Add additional parameters (learning rate, use HER, HER parameters, num episodes)
+    # TODO(mcorsaro): Implement HER correctly
+    # TODO(mcorsaro): Use all parameters (logging_frequency)
 
-    possible_thresholders = "critic-threshold", "ope-threshold"
-    possible_clfs = "position-clf", "pos-critic-clf", "pos-ope-clf", "state-clf", "state-critic-clf", "state-ope-clf", "dist-clf"
-    assert args.init_classifier_type in possible_thresholders or possible_clfs
-
-    if not args.use_value_function:
-        assert not args.use_global_value_function
-
-    if args.use_skill_trees:
-        assert args.max_num_children > 1, f"{args.use_skill_trees, args.max_num_children}"
-
-    if args.environment in ["antmaze-umaze-v0", "antmaze-medium-play-v0", "antmaze-large-play-v0"]:
-        env = gym.make(args.environment)
-        # pick a goal state for the env
-        if args.goal_state:
-            goal_state = np.array(args.goal_state)
-        else:
-            # default to D4RL goal state
-            goal_state = np.array(env.target_goal)
-        print(f'using goal state {goal_state} in env {args.environment}')
-        env = D4RLAntMazeWrapper(
-            env,
-            start_state=np.array((0, 0)),
-            goal_state=goal_state,
-            init_truncate="position" in args.init_classifier_type,
-            use_dense_reward=args.use_dense_rewards
-        )
-
-        torch.manual_seed(0)
-        seeding.seed(0, random, np)
-        seeding.seed(args.seed, gym, env)
-
-    else:
-        raise NotImplementedError("Environment not supported!")
-
-    kwargs = {
-            "mdp":env,
-            "gestation_period": args.gestation_period,
-            "experiment_name": args.experiment_name,
-            "device": torch.device('cuda' if torch.cuda.is_available() else 'cpu'),
-            "warmup_episodes": args.warmup_episodes,
-            "max_steps": args.steps,
-            "use_model": args.use_model,
-            "use_vf": args.use_value_function,
-            "use_global_vf": args.use_global_value_function,
-            "use_diverse_starts": args.use_diverse_starts,
-            "use_dense_rewards": args.use_dense_rewards,
-            "multithread_mpc": args.multithread_mpc,
-            "logging_freq": args.logging_frequency,
-            "evaluation_freq": args.evaluation_frequency,
-            "buffer_length": args.buffer_length,
-            "generate_init_gif": args.generate_init_gif,
-            "seed": args.seed,
-            "lr_c": args.lr_c,
-            "lr_a": args.lr_a,
-            "max_num_children": args.max_num_children,
-            "init_classifier_type": args.init_classifier_type, 
-            "optimistic_threshold": args.optimistic_threshold,
-            "pessimistic_threshold": args.pessimistic_threshold,
-            "agent_type": args.agent_type
-    }
-
-    exp = RobustDST(**kwargs) if args.use_skill_trees else RobustDSC(**kwargs)
-
-    # create the saving directories
     saving_dir = os.path.join(args.results_dir, args.experiment_name)
     create_log_dir(saving_dir)
-    create_log_dir(os.path.join(saving_dir, "initiation_set_plots/"))
-    create_log_dir(os.path.join(saving_dir, "value_function_plots/"))
 
-    start_time = time.time()
-    durations = exp.run_loop(args.episodes, args.steps)
-    end_time = time.time()
+    env = gym.make(args.environment)
+    # pick a goal state for the env
+    goal_state = np.array(args.goal_state)
+    mdp = D4RLAntMazeWrapper(
+        env,
+        start_state=np.array((0, 0)),
+        goal_state=goal_state,
+        #init_truncate="position" in args.init_classifier_type,
+        use_dense_reward=args.use_dense_rewards
+    )
 
-    print("Time taken: ", end_time - start_time)
+    torch.manual_seed(0)
+    seeding.seed(0, random, np)
+    seeding.seed(args.seed, gym, env)
 
+    agent = TD3(state_dim=mdp.state_space_size(),
+                action_dim=mdp.action_space_size(),
+                max_action=1.,
+                use_output_normalization=False)
+
+    per_episode_scores = []
+
+    for episode in range(args.episodes):
+        mdp.reset()
+        goal = goal_state
+        score, trajectory = rollout(agent, mdp, goal, args.steps)
+        experience_replay(agent, mdp, trajectory, goal)
+
+        per_episode_scores.append(score)
+        print(f"Episode: {episode} | Score: {score}")
+        if episode > 0 and episode % 100 == 0:
+            make_chunked_value_function_plot(agent, episode, 0, saving_dir)
