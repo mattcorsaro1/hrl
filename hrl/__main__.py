@@ -27,10 +27,9 @@ def rollout(agent, mdp, goal, steps):
 
     for step in range(steps):
         state = deepcopy(mdp.cur_state)
-        action = agent.act(state.features())
+        action = agent.act(state)
 
-        _, next_state = mdp.execute_agent_action(action)
-        reward, done = mdp.sparse_gc_reward_function(next_state, goal, info={})
+        next_state, reward, done, _ = mdp.step(action)
 
         score = score + reward
         trajectory.append((state, action, reward, next_state))
