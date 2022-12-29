@@ -16,7 +16,7 @@ from hrl.wrappers.antmaze_wrapper import D4RLAntMazeWrapper
 
 def experience_replay(agent, mdp, trajectory, goal):
     for state, action, _, next_state in trajectory:
-        reward, done = mdp.sparse_gc_reward_function(next_state, goal, info={})
+        reward, done = mdp.sparse_gc_reward_func(next_state, goal, info={})
         agent.step(state.features(), action, reward, next_state.features(), done)
 
 
