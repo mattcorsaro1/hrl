@@ -76,7 +76,7 @@ if __name__ == "__main__":
 
     # TODO(mcorsaro): Add additional parameters (learning rate, use HER, HER parameters, num episodes)
     # TODO(mcorsaro): Implement ER correctly
-    # TODO(mcorsaro): Implement HER: experience_replay(agent, mdp, trajectory, reached_goal)
+    # TODO(mcorsaro): Implement HER: experience_replay(agent, mdp, trajectory, reached_goal) (Line 62 in original)
     # TODO(mcorsaro): Use all parameters (logging_frequency)
 
     saving_dir = os.path.join(args.results_dir, args.experiment_name)
