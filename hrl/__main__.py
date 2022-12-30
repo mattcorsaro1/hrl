@@ -42,7 +42,7 @@ def rollout(agent, mdp, goal, steps):
 
     for step in range(steps):
         state = deepcopy(mdp.cur_state)
-        action = agent.act(state)
+        action = agent.act(get_augmented_state(state, goal, mdp))
 
         next_state, reward, done, _ = mdp.step(action)
 
@@ -97,7 +97,7 @@ if __name__ == "__main__":
     seeding.seed(0, random, np)
     seeding.seed(args.seed, gym, env)
 
-    agent = TD3(state_dim=mdp.state_space_size(),
+    agent = TD3(state_dim=mdp.state_space_size()+2,
                 action_dim=mdp.action_space_size(),
                 max_action=1.,
                 use_output_normalization=False)
