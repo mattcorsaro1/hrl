@@ -9,7 +9,7 @@ import seeding
 import gym
 import d4rl
 import torch
-from hrl.utils import create_log_dir
+from hrl.utils import create_log_dir, MetaLogger
 from hrl.agent.td3.TD3AgentClass import TD3
 from hrl.agent.td3.utils import make_chunked_value_function_plot
 from hrl.wrappers.antmaze_wrapper import D4RLAntMazeWrapper
@@ -60,35 +60,41 @@ def rollout(agent, mdp, goal, steps):
         if done:
             break
 
-    return score, trajectory
+    return done, score, trajectory
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--experiment_name", type=str, help="Experiment Name")
     parser.add_argument("--results_dir", type=str, default='results',
                         help='the name of the directory used to store results')
-    parser.add_argument("--device", type=str, help="cpu/cuda:0/cuda:1")
+    #parser.add_argument("--device", type=str, help="cpu/cuda:0/cuda:1")
     parser.add_argument("--environment", type=str, choices=["antmaze-umaze-v0", "antmaze-medium-play-v0", "antmaze-large-play-v0"], 
                         help="name of the gym environment")
     parser.add_argument("--seed", type=int, help="Random seed")
 
     parser.add_argument("--use_dense_rewards", action="store_true", default=False)
     parser.add_argument("--use_HER", action="store_true", default=False)
-    parser.add_argument("--buffer_length", type=int, default=50)
     parser.add_argument("--episodes", type=int, default=150)
     parser.add_argument("--steps", type=int, default=1000)
     parser.add_argument("--logging_frequency", type=int, default=50, help="Plot after every _ episodes")
+
+    parser.add_argument("--lr_c", type=float, default=3e-4)
+    parser.add_argument("--lr_a", type=float, default=3e-4)
 
     parser.add_argument("--goal_state", nargs="+", type=float, default=[0, 8],
                         help="specify the goal state of the environment, (0, 8) for example")
     args = parser.parse_args()
 
-    # TODO(mcorsaro): Add additional parameters (learning rate, use HER, HER parameters, num episodes)
-    # TODO(mcorsaro): Implement HER: experience_replay(agent, mdp, trajectory, reached_goal) (Line 62 in original)
-    # TODO(mcorsaro): Use all parameters (logging_frequency)
+    # TODO(mcorsaro): Add additional parameters (learning rate, HER parameters)
 
     saving_dir = os.path.join(args.results_dir, args.experiment_name)
     create_log_dir(saving_dir)
+    meta_logger = MetaLogger(saving_dir)
+    logging_filename = f"seed_{args.seed}.pkl"
+
+    meta_logger.add_field("episodic_success_rate", logging_filename)
+    meta_logger.add_field("episodic_score", logging_filename)
+    meta_logger.add_field("episodic_final_dist", logging_filename)
 
     env = gym.make(args.environment)
     # pick a goal state for the env
@@ -105,26 +111,32 @@ if __name__ == "__main__":
     seeding.seed(0, random, np)
     seeding.seed(args.seed, gym, env)
 
-    # TODO(mcorsaro): parameterize
-    agent = TD3(state_dim=mdp.state_space_size()+2,
+    agent = TD3(state_dim=mdp.state_space_size()+goal_state.shape[0],
                 action_dim=mdp.action_space_size(),
                 max_action=1.,
-                use_output_normalization=False)
-
-    per_episode_scores = []
+                #device=args.device,
+                lr_c=args.lr_c, lr_a=args.lr_a,
+                use_output_normalization=use_output_norm)
 
     for episode in range(args.episodes):
         mdp.reset()
         goal = goal_state
-        score, trajectory = rollout(agent, mdp, goal, args.steps)
+        done, score, trajectory = rollout(agent, mdp, goal, args.steps)
         experience_replay(agent, mdp, trajectory, goal, args.use_dense_rewards)
+
+        last_sars = trajectory[-1]
+        final_reached_state = last_sars[-1]
+        reached_goal = get_position(final_reached_state)
         if args.use_HER:
-            last_sars = trajectory[-1]
-            final_reached_state = last_sars[-1]
-            reached_goal = get_position(final_reached_state)
             experience_replay(agent, mdp, trajectory, reached_goal, args.use_dense_rewards)
 
-        per_episode_scores.append(score)
+        distance_to_goal = self.norm_func(reached_goal - goal)
+        meta_logger.append_datapoint("episodic_success_rate", done, write=True)
+        meta_logger.append_datapoint("episodic_score", score, write=True)
+        meta_logger.append_datapoint("episodic_final_dist", distance_to_goal, write=True)
+
         print(f"Episode: {episode} | Score: {score}")
-        if episode > 0 and episode % 100 == 0:
-            make_chunked_value_function_plot(agent, episode, 0, saving_dir)
+        '''if episode > 0 and episode % args.logging_frequency == 0:
+            make_chunked_value_function_plot(agent, episode, 0, saving_dir)'''
+
+    save_text_file()
