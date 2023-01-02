@@ -14,6 +14,13 @@ from hrl.agent.td3.TD3AgentClass import TD3
 from hrl.agent.td3.utils import make_chunked_value_function_plot
 from hrl.wrappers.antmaze_wrapper import D4RLAntMazeWrapper
 
+# TODO(mcorsaro): Wrap all this in a class
+def get_position(state):
+    """
+    position in the antmaze is the x, y coordinates
+    """
+    return state[:2]
+
 def extract_goal_dimensions(mdp, goal):
     def _extract(goal):
         goal_features = goal
@@ -30,9 +37,10 @@ def get_augmented_state(state, goal, mdp):
     goal_position = extract_goal_dimensions(mdp, goal)
     return np.concatenate((state, goal_position))
 
-def experience_replay(agent, mdp, trajectory, goal):
+def experience_replay(agent, mdp, trajectory, goal, dense_reward):
     for state, action, _, next_state in trajectory:
-        reward, done = mdp.sparse_gc_reward_func(next_state, goal)
+        reward_func = mdp.dense_gc_reward_func if dense_reward else mdp.sparse_gc_reward_func
+        reward, done = reward_func(next_state, goal)
         agent.step(get_augmented_state(state, goal, mdp), action, reward, get_augmented_state(next_state, goal, mdp), done)
 
 def rollout(agent, mdp, goal, steps):
@@ -65,6 +73,7 @@ if __name__ == "__main__":
     parser.add_argument("--seed", type=int, help="Random seed")
 
     parser.add_argument("--use_dense_rewards", action="store_true", default=False)
+    parser.add_argument("--use_HER", action="store_true", default=False)
     parser.add_argument("--buffer_length", type=int, default=50)
     parser.add_argument("--episodes", type=int, default=150)
     parser.add_argument("--steps", type=int, default=1000)
@@ -75,7 +84,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # TODO(mcorsaro): Add additional parameters (learning rate, use HER, HER parameters, num episodes)
-    # TODO(mcorsaro): Implement ER correctly
     # TODO(mcorsaro): Implement HER: experience_replay(agent, mdp, trajectory, reached_goal) (Line 62 in original)
     # TODO(mcorsaro): Use all parameters (logging_frequency)
 
@@ -97,6 +105,7 @@ if __name__ == "__main__":
     seeding.seed(0, random, np)
     seeding.seed(args.seed, gym, env)
 
+    # TODO(mcorsaro): parameterize
     agent = TD3(state_dim=mdp.state_space_size()+2,
                 action_dim=mdp.action_space_size(),
                 max_action=1.,
@@ -108,7 +117,12 @@ if __name__ == "__main__":
         mdp.reset()
         goal = goal_state
         score, trajectory = rollout(agent, mdp, goal, args.steps)
-        experience_replay(agent, mdp, trajectory, goal)
+        experience_replay(agent, mdp, trajectory, goal, args.use_dense_rewards)
+        if args.use_HER:
+            last_sars = trajectory[-1]
+            final_reached_state = last_sars[-1]
+            reached_goal = get_position(final_reached_state)
+            experience_replay(agent, mdp, trajectory, reached_goal, args.use_dense_rewards)
 
         per_episode_scores.append(score)
         print(f"Episode: {episode} | Score: {score}")
