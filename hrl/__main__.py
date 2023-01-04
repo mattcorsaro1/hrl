@@ -139,5 +139,3 @@ if __name__ == "__main__":
         print(f"Episode: {episode} | Score: {score}")
         '''if episode > 0 and episode % args.logging_frequency == 0:
             make_chunked_value_function_plot(agent, episode, 0, saving_dir)'''
-
-    save_text_file()
