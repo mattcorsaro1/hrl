@@ -67,7 +67,7 @@ if __name__ == "__main__":
     parser.add_argument("--experiment_name", type=str, help="Experiment Name")
     parser.add_argument("--results_dir", type=str, default='results',
                         help='the name of the directory used to store results')
-    #parser.add_argument("--device", type=str, help="cpu/cuda:0/cuda:1")
+    parser.add_argument("--device", type=str, help="cpu/cuda:0/cuda:1")
     parser.add_argument("--environment", type=str, choices=["antmaze-umaze-v0", "antmaze-medium-play-v0", "antmaze-large-play-v0"], 
                         help="name of the gym environment")
     parser.add_argument("--seed", type=int, help="Random seed")
@@ -115,7 +115,7 @@ if __name__ == "__main__":
     agent = TD3(state_dim=mdp.state_space_size()+goal_state.shape[0],
                 action_dim=mdp.action_space_size(),
                 max_action=1.,
-                #device=args.device,
+                device=args.device,
                 lr_c=args.lr_c, lr_a=args.lr_a,
                 use_output_normalization=args.use_output_norm)
 
@@ -131,7 +131,7 @@ if __name__ == "__main__":
         if args.use_HER:
             experience_replay(agent, mdp, trajectory, reached_goal, args.use_dense_rewards)
 
-        distance_to_goal = self.norm_func(reached_goal - goal)
+        distance_to_goal = np.linalg.norm(reached_goal - goal, axis=-1)
         meta_logger.append_datapoint("episodic_success_rate", done, write=True)
         meta_logger.append_datapoint("episodic_score", score, write=True)
         meta_logger.append_datapoint("episodic_final_dist", distance_to_goal, write=True)
