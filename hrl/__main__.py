@@ -74,6 +74,7 @@ if __name__ == "__main__":
 
     parser.add_argument("--use_dense_rewards", action="store_true", default=False)
     parser.add_argument("--use_HER", action="store_true", default=False)
+    parser.add_argument("--use_output_norm", action="store_true", default=False)
     parser.add_argument("--episodes", type=int, default=150)
     parser.add_argument("--steps", type=int, default=1000)
     parser.add_argument("--logging_frequency", type=int, default=50, help="Plot after every _ episodes")
@@ -116,7 +117,7 @@ if __name__ == "__main__":
                 max_action=1.,
                 #device=args.device,
                 lr_c=args.lr_c, lr_a=args.lr_a,
-                use_output_normalization=use_output_norm)
+                use_output_normalization=args.use_output_norm)
 
     for episode in range(args.episodes):
         mdp.reset()
