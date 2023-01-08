@@ -68,30 +68,24 @@ def generatePlot(y_val_sets_over_seed, plot_title, labels, plot_dir_this_obj, ma
 def main():
     parser = argparse.ArgumentParser(description='Generate plots for thesis experiments.')
 
-    parser.add_argument('--data_dir', type=str, default="/users/mcorsaro/data/mcorsaro/thesis_results/")
+    parser.add_argument('--data_dir', type=str, default="/users/mcorsaro/scratch/results/")
     args = parser.parse_args()
 
-    plots_to_make = ["episodic_rewards", "episodic_success_rate"]#"evaluation_rewards", "task_success_rate"
+    plots_to_make = ["episodic_final_dist", "episodic_score", "episodic_success_rate"]#"evaluation_rewards", "task_success_rate"
 
     runs_to_plot = {}
-    runs_to_plot["door"] = [\
-        "door_random", \
-        "door_oracle", \
-        "door_clf_uw", \
-        "door_clf", \
-    ]
-    runs_to_plot["switch"] = [\
-        "switch_baseline_harder_sparse_7", \
-        "switch_oracle_1", \
-        "switch_clf_uw_20k", \
-        "switch_clf_20k", \
+    runs_to_plot["ant"] = [\
+        "ant_sparse", \
+        "ant_dense", \
+        "ant_sparse_her", \
+        "ant_dense_her", \
     ]
 
     titles = [\
-        "Random Grasps", \
-        "Oracle Grasps", \
-        "Unweighted Classifier", \
-        "Classifier"
+        "Sparse", \
+        "Dense", \
+        "Sparse and HER", \
+        "Dense and HER"
     ]
 
     timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y_%m_%d_%H_%M_%S')
@@ -105,11 +99,11 @@ def main():
         os.mkdir(plot_dir_this_obj)
 
         obj_plots_to_make = copy.deepcopy(plots_to_make)
-        if obj == "switch":
-            obj_plots_to_make.append("switch_state")
-        elif obj == "door":
-            obj_plots_to_make.append("door_hinge_state")
-            obj_plots_to_make.append("door_latch_state")
+        """if obj == "switch":
+                                    obj_plots_to_make.append("switch_state")
+                                elif obj == "door":
+                                    obj_plots_to_make.append("door_hinge_state")
+                                    obj_plots_to_make.append("door_latch_state")"""
         for plot in obj_plots_to_make:
 
             pickle_filenames = {}
@@ -118,7 +112,7 @@ def main():
             # Random grasp baseline, oracle grasps, etc.
             for method in runs_to_plot_this_obj:
                 y_vals_this_method = []
-                result_dir = args.data_dir + '/' + obj + '/' + method + "/rainbow/" + plot
+                result_dir = args.data_dir + '/' + obj + '/' + method + '/' + plot
                 pickle_files = os.listdir(result_dir)
                 pickle_files.sort()
                 pickle_filenames[method] = pickle_files
@@ -127,9 +121,9 @@ def main():
                     y_vals_this_method.append(loadPickleFile(pickle_file, result_dir))
                 y_val_sets_over_seed.append(y_vals_this_method)
 
-            generatePlot(y_val_sets_over_seed, plot, titles, plot_dir_this_obj, max_x=30000 if obj == "door" else 20000, leg_loc="upper left" if obj == "door" else "lower right")
+            generatePlot(y_val_sets_over_seed, plot, titles, plot_dir_this_obj, max_x=20000, leg_loc="upper left")
             if "episodic" in plot or "state" in plot:
-                generatePlot(y_val_sets_over_seed, plot + "_smoothed", titles, plot_dir_this_obj, smooth_over=200, max_x=30000 if obj == "door" else 20000, leg_loc="upper left" if obj == "door" else "lower right")
+                generatePlot(y_val_sets_over_seed, plot + "_smoothed", titles, plot_dir_this_obj, smooth_over=20, max_x=20000, leg_loc="upper left")
                 # for the smoothed plots, also plot each method on individual plot with different line for each seed
                 for method_i in range(len(y_val_sets_over_seed)):
                     y_vals_this_method = [[y_vals] for y_vals in y_val_sets_over_seed[method_i]]
