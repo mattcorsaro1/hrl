@@ -1,0 +1,124 @@
+
+<?xml version="0.0" ?>
+<robot name="">
+	<!-- Assuming collision detection is only required prior to grasping, object is fixed -->
+	<link name="mug">
+		<inertial>
+			<origin rpy="0 0 0" xyz="0.00000 0.00000 0.05"/>
+			<mass value="0.4"/>
+			<inertia ixx="0.0003733" ixy="0" ixz="0" iyy="0.0003733" iyz="0" izz="0.00001333"/>
+		</inertial>
+
+		<visual>
+			<origin rpy="0 0 0" xyz="0.00000 0.00000 0.05"/>
+			<geometry>
+				<cylinder length="0.1" radius="0.025"/>
+			</geometry>
+			<material name="mat_-1_0">
+				<color rgba="0.23438 0.72656 0.32812 1.00000" />
+			</material>
+		</visual>
+		<collision>
+			<origin rpy="0 0 0" xyz="0.00000 0.00000 0.05"/>
+			<geometry>
+				<cylinder length="0.1" radius="0.025"/>
+			</geometry>
+		</collision>
+
+		<visual>
+			<origin rpy="0 0 0" xyz="0.06 0.00000 0.05"/>
+			<geometry>
+				<cylinder length="0.06" radius="0.005"/>
+			</geometry>
+			<material name="mat_-1_0">
+				<color rgba="0.23438 0.72656 0.32812 1.00000" />
+			</material>
+		</visual>
+		<collision>
+			<origin rpy="0 0 0" xyz="0.06 0.00000 0.05"/>
+			<geometry>
+				<cylinder length="0.06" radius="0.005"/>
+			</geometry>
+		</collision>
+
+		<visual>
+			<origin rpy="0 1.5708 0" xyz="0.03 0.00000 0.075"/>
+			<geometry>
+				<cylinder length="0.06" radius="0.005"/>
+			</geometry>
+			<material name="mat_-1_0">
+				<color rgba="0.23438 0.72656 0.32812 1.00000" />
+			</material>
+		</visual>
+		<collision>
+			<origin rpy="0 1.5708 0" xyz="0.03 0.00000 0.075"/>
+			<geometry>
+				<cylinder length="0.06" radius="0.005"/>
+			</geometry>
+		</collision>
+
+		<visual>
+			<origin rpy="0 1.5708 0" xyz="0.03 0.00000 0.025"/>
+			<geometry>
+				<cylinder length="0.06" radius="0.005"/>
+			</geometry>
+			<material name="mat_-1_0">
+				<color rgba="0.23438 0.72656 0.32812 1.00000" />
+			</material>
+		</visual>
+		<collision>
+			<origin rpy="0 1.5708 0" xyz="0.03 0.00000 0.025"/>
+			<geometry>
+				<cylinder length="0.06" radius="0.005"/>
+			</geometry>
+		</collision>
+
+      <geom   size="0.005 0.03" pos="0.03 0 0.025" quat="0.7071 0 0.7071 0" type="cylinder" material="MatWood" rgba="1 0 0 1" contype="1" conaffinity="1"/>
+      <geom   size="0.005 0.03" pos="0.03 0 -0.025" quat="0.7071 0 0.7071 0" type="cylinder" material="MatWood" rgba="1 0 0 1" contype="1" conaffinity="1"/>
+	</link>
+	<link name="post">
+		<inertial>
+			<origin rpy="0.9 0 0" xyz="0.00000 -0.05 0.0"/>
+			<mass value="0.4"/>
+			<inertia ixx="0.0003733" ixy="0" ixz="0" iyy="0.0003733" iyz="0" izz="0.00001333"/>
+		</inertial>
+		<visual>
+			<origin rpy="0.9 0 0" xyz="0.00000 -0.05 0.0"/>
+			<geometry>
+				<cylinder length="0.12" radius="0.0075"/>
+			</geometry>
+			<material name="mat_-1_0">
+				<color rgba="0.23438 0.72656 0.32812 1.00000" />
+			</material>
+		</visual>
+		<collision>
+			<origin rpy="0.9 0 0" xyz="0.00000 -0.05 0.0"/>
+			<geometry>
+				<cylinder length="0.12" radius="0.0075"/>
+			</geometry>
+		</collision>
+		<visual>
+			<origin rpy="0 0 0" xyz="0.00000 0.0 0.0"/>
+			<geometry>
+				<box size="0.2 0.0001 0.2"/>
+			</geometry>
+			<material name="mat_-1_0">
+				<color rgba="0.23438 0.72656 0.32812 1.00000" />
+			</material>
+		</visual>
+		<collision>
+			<origin rpy="0 0 0" xyz="0.00000 0.0 0.0"/>
+			<geometry>
+				<box size="0.2 0.0001 0.2"/>
+			</geometry>
+		</collision>
+	</link>
+	<!-- Offset is distance from mug frame to post frame -->
+	<joint name="fixed_mug_to_post_joint" type="fixed">
+		<parent link="mug"/>
+		<child link="post"/>
+		<dynamics damping="1.0" friction="0.0001"/>
+		<origin xyz="0.0 0.2 0.3"/>
+		<axis xyz="0.00000 0.00000 0.00000"/>
+	</joint>
+</robot>
