@@ -1,0 +1,21 @@
+</mujoco>
+ <worldbody>
+  <body name="mug" pos="0.0 0.5 0.05">
+      <!--TODO(mcorsaro): update inertia-->
+      <inertial pos="0 0 0" quat="1 0 0 0" mass="0.4" diaginertia="0.0003733 0.0003733 0.00001333" />
+      <geom   size="0.025 0.05" pos="0.0 0 0" type="cylinder" material="MatWood" rgba="1 0 0 1" contype="1" conaffinity="1"/>
+      <geom   size="0.005 0.03" pos="0.06 0 0" type="cylinder" material="MatWood" rgba="1 0 0 1" contype="1" conaffinity="1"/>
+      <geom   size="0.005 0.03" pos="0.03 0 0.025" quat="0.7071 0 0.7071 0" type="cylinder" material="MatWood" rgba="1 0 0 1" contype="1" conaffinity="1"/>
+      <geom   size="0.005 0.03" pos="0.03 0 -0.025" quat="0.7071 0 0.7071 0" type="cylinder" material="MatWood" rgba="1 0 0 1" contype="1" conaffinity="1"/>
+      <freejoint name="mug_free_joint"/>
+      <site name="mug_site" pos="0 0 0"/>
+  </body>
+
+  <body name="post" pos="0.0 0.7 0.3">
+      <!--TODO(mcorsaro): update inertia-->
+      <inertial pos="0 0 0" quat="1 0 0 0" mass="0.4" diaginertia="0.0003733 0.0003733 0.00001333" />
+      <geom   size="0.1 0.1 255" pos="0.0 0 0" quat="0.7071 0.7071 0 0" type="plane" material="MatWood" rgba="0 1 0 1" contype="1" conaffinity="1"/>
+      <geom   size="0.0075 0.06" pos="0 -0.05 0.0" quat="0.9004471 0.4349655 0 0" type="cylinder" material="MatWood" rgba="0 1 0 1" contype="1" conaffinity="1"/>
+  </body>
+</worldbody>
+</mujoco>

@@ -1,0 +1,27 @@
+
+<?xml version="0.0" ?>
+<robot name="">
+	<!-- Assuming collision detection is only required prior to grasping, object is fixed -->
+	<link name="pitcher">
+		<inertial>
+			<origin rpy="0 0 0" xyz="0.00000 0.00000 0.1"/>
+			<mass value="0.4"/>
+			<inertia ixx="0.0003733" ixy="0" ixz="0" iyy="0.0003733" iyz="0" izz="0.00001333"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0.00000 0.00000 0.1"/>
+			<geometry>
+				<cylinder length="0.2" radius="0.025"/>
+			</geometry>
+			<material name="mat_-1_0">
+				<color rgba="0.23438 0.72656 0.32812 1.00000" />
+			</material>
+		</visual>
+		<collision>
+			<origin rpy="0 0 0" xyz="0.00000 0.00000 0.1"/>
+			<geometry>
+				<cylinder length="0.2" radius="0.025"/>
+			</geometry>
+		</collision>
+	</link>
+</robot>
