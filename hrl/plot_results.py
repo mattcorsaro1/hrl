@@ -121,13 +121,14 @@ def main():
                     y_vals_this_method.append(loadPickleFile(pickle_file, result_dir))
                 y_val_sets_over_seed.append(y_vals_this_method)
 
-            generatePlot(y_val_sets_over_seed, plot, titles, plot_dir_this_obj, max_x=3000, leg_loc="upper left")
+            max_x_val = np.array([[len(vals) for vals in set] for set in y_val_sets_over_seed]).max()
+            generatePlot(y_val_sets_over_seed, plot, titles, plot_dir_this_obj, max_x=max_x_val, leg_loc="upper left")
             if "episodic" in plot or "state" in plot:
-                generatePlot(y_val_sets_over_seed, plot + "_smoothed", titles, plot_dir_this_obj, smooth_over=20, max_x=3000, leg_loc="upper left")
+                generatePlot(y_val_sets_over_seed, plot + "_smoothed", titles, plot_dir_this_obj, smooth_over=20, max_x=max_x_val, leg_loc="upper left")
                 # for the smoothed plots, also plot each method on individual plot with different line for each seed
                 for method_i in range(len(y_val_sets_over_seed)):
                     y_vals_this_method = [[y_vals] for y_vals in y_val_sets_over_seed[method_i]]
-                    generatePlot(y_vals_this_method, plot + "_smoothed_" + titles[method_i], pickle_filenames[runs_to_plot_this_obj[method_i]], plot_dir_this_obj, max_x=3000 if obj == "door" else None, smooth_over=200, leg_loc="upper left" if obj == "door" else "lower right")
+                    generatePlot(y_vals_this_method, plot + "_smoothed_" + titles[method_i], pickle_filenames[runs_to_plot_this_obj[method_i]], plot_dir_this_obj, max_x=max_x_val if obj == "door" else None, smooth_over=200, leg_loc="upper left" if obj == "door" else "lower right")
 
 if __name__ == '__main__':
     main()
