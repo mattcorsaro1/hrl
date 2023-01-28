@@ -131,8 +131,7 @@ if __name__ == "__main__":
         mdp = D4RLGraspEnvWrapper(
             env,
             start_state=start_state,
-            goal_state=goal_state,
-            use_dense_rewards=args.use_dense_rewards)
+            goal_state=goal_state)
     else:
         raise ValueError(f'Unknown environment {args.environment}')
 
