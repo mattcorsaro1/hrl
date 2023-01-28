@@ -13,6 +13,9 @@ from hrl.utils import create_log_dir, MetaLogger
 from hrl.agent.td3.TD3AgentClass import TD3
 from hrl.agent.td3.utils import make_chunked_value_function_plot
 from hrl.wrappers.antmaze_wrapper import D4RLAntMazeWrapper
+from hrl.wrappers.MujocoGraspEnv_wrapper import D4RLGraspEnvWrapper
+
+from MujocoGraspEnv import MujocoGraspEnv
 
 # TODO(mcorsaro): Wrap all this in a class
 def get_position(state):
@@ -68,7 +71,7 @@ if __name__ == "__main__":
     parser.add_argument("--results_dir", type=str, default='results',
                         help='the name of the directory used to store results')
     parser.add_argument("--device", type=str, help="cpu/cuda:0/cuda:1")
-    parser.add_argument("--environment", type=str, choices=["antmaze-umaze-v0", "antmaze-medium-play-v0", "antmaze-large-play-v0"], 
+    parser.add_argument("--environment", type=str, choices=["door", "switch", "antmaze-umaze-v0", "antmaze-medium-play-v0", "antmaze-large-play-v0"], 
                         help="name of the gym environment")
     parser.add_argument("--seed", type=int, help="Random seed")
 
@@ -97,16 +100,33 @@ if __name__ == "__main__":
     meta_logger.add_field("episodic_score", logging_filename)
     meta_logger.add_field("episodic_final_dist", logging_filename)
 
-    env = gym.make(args.environment)
-    # pick a goal state for the env
-    goal_state = np.array(args.goal_state)
-    mdp = D4RLAntMazeWrapper(
-        env,
-        start_state=np.array((0, 0)),
-        goal_state=goal_state,
-        #init_truncate="position" in args.init_classifier_type,
-        use_dense_reward=args.use_dense_rewards
-    )
+    if "ant" in args.environment:
+        env = gym.make(args.environment)
+        # pick a goal state for the env
+        goal_state = np.array(args.goal_state)
+        mdp = D4RLAntMazeWrapper(
+            env,
+            start_state=np.array((0, 0)),
+            goal_state=goal_state,
+            #init_truncate="position" in args.init_classifier_type,
+            use_dense_reward=args.use_dense_rewards
+        )
+    elif args.environment == "door" or args.environment == "switch":
+        env = MujocoGraspEnv(args.environment, False, reward_sparse=(not args.use_dense_rewards), gravity=True, lock_fingers_closed=True,
+                         sample_method="random", state_space="friendly")
+        start_state = np.array([0])
+        goal_state = None
+        if args.environment == "door":
+            goal_state = np.array([0.5])
+        elif args.environment == "switch":
+            goal_state = np.array([3])
+        mdp = D4RLGraspEnvWrapper(
+            env,
+            start_state=start_state,
+            goal_state=goal_state,
+            use_dense_rewards=args.use_dense_rewards)
+    else:
+        raise ValueError(f'Unknown environment {args.environment}')
 
     torch.manual_seed(0)
     seeding.seed(0, random, np)
@@ -122,7 +142,7 @@ if __name__ == "__main__":
     for episode in range(args.episodes):
         mdp.reset()
         goal = goal_state
-        done, score, trajectory = rollout(agent, mdp, goal, args.steps)
+        done, score, trajectory = rollout(agent, mdp, goal, args.steps if "ant" in args.environment else mdp.env._max_episode_steps)
         experience_replay(agent, mdp, trajectory, goal, args.use_dense_rewards)
 
         last_sars = trajectory[-1]
@@ -131,7 +151,11 @@ if __name__ == "__main__":
         if args.use_HER:
             experience_replay(agent, mdp, trajectory, reached_goal, args.use_dense_rewards)
 
-        distance_to_goal = np.linalg.norm(reached_goal - goal, axis=-1)
+        distance_to_goal = None
+        if "ant" in args.environment:
+            distance_to_goal = np.linalg.norm(reached_goal - goal, axis=-1)
+        elif args.environment == "door" or args.environment == "switch":
+            distance_to_goal = reached_goal[0]
         meta_logger.append_datapoint("episodic_success_rate", done, write=True)
         meta_logger.append_datapoint("episodic_score", score, write=True)
         meta_logger.append_datapoint("episodic_final_dist", distance_to_goal, write=True)
