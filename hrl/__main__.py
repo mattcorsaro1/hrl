@@ -21,6 +21,8 @@ from hrl.wrappers.MujocoGraspEnv_wrapper import D4RLGraspEnvWrapper
 #sys.path.insert(1, os.path.join(sys.path[0], '../../GraspInitiation/'))
 #sys.path.insert(1, os.path.join(sys.path[0], '~/Software/GraspInitiation/scripts/'))
 #sys.path.insert(1, os.path.join(sys.path[0], '~/Software/GraspInitiation/'))
+sys.path.insert(1, os.path.join(sys.path[0], '/users/mcorsaro/Software/GraspInitiation/scripts/'))
+sys.path.insert(1, os.path.join(sys.path[0], '/users/mcorsaro/Software/GraspInitiation/'))
 from MujocoGraspEnv import MujocoGraspEnv
 
 # TODO(mcorsaro): Wrap all this in a class
