@@ -19,8 +19,8 @@ sys.path.insert(1, os.path.join(sys.path[0], '../GraspInitiation/scripts/'))
 sys.path.insert(1, os.path.join(sys.path[0], '../GraspInitiation/'))
 sys.path.insert(1, os.path.join(sys.path[0], '../../GraspInitiation/scripts/'))
 sys.path.insert(1, os.path.join(sys.path[0], '../../GraspInitiation/'))
-sys.path.insert(1, os.path.join(sys.path[0], '~/GraspInitiation/scripts/'))
-sys.path.insert(1, os.path.join(sys.path[0], '~/GraspInitiation/'))
+sys.path.insert(1, os.path.join(sys.path[0], '~/Software/GraspInitiation/scripts/'))
+sys.path.insert(1, os.path.join(sys.path[0], '~/Software/GraspInitiation/'))
 from MujocoGraspEnv import MujocoGraspEnv
 
 # TODO(mcorsaro): Wrap all this in a class
