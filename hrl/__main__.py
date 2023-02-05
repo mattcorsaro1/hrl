@@ -35,6 +35,8 @@ def get_position(state):
 def extract_goal_dimensions(mdp, goal):
     def _extract(goal):
         goal_features = goal
+        if isinstance(mdp.unwrapped, MujocoGraspEnv):
+            return goal
         if "ant" in mdp.unwrapped.spec.id:
             return goal_features[:2]
         raise NotImplementedError(f"{mdp.env_name}")

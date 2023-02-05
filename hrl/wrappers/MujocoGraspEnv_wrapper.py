@@ -21,6 +21,9 @@ class D4RLGraspEnvWrapper(GoalConditionedMDPWrapper):
     def action_space_size(self):
         return self.env.action_space.shape[0]
     
+    def dense_gc_reward_func(self, states, goals, batched=False):
+        raise NotImplementedError(f"Robot environment dense reward functions not implemented.")
+
     def sparse_gc_reward_func(self, states, goals, batched=False):
         """
         overwritting sparse gc reward function for antmaze
