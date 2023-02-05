@@ -47,57 +47,15 @@ class D4RLGraspEnvWrapper(GoalConditionedMDPWrapper):
             goal_positions = goals
         dones = current_positions > goal_positions
 
-        rewards = np.zeros_like(dones)
+        rewards = np.zeros(dones.shape)
         rewards[dones==1] = 1.
         rewards[dones==0] = 0.
-
-        breakpoint()
 
         return rewards, dones
 
     def step(self, action):
         next_state, reward, done, info = self.env.step(action)
-        reward, done = self.reward_func(next_state, self.get_current_goal())
+        reward, done = self.reward_func(next_state, self.goal_state)
         self.cur_state = next_state
         self.cur_done = done
         return next_state, reward, done, info
-
-    def get_current_goal(self):
-        return self.get_position(self.goal_state)
-
-    def is_start_region(self, states):
-        dist_to_start = self.norm_func(states - self.start_state)
-        return dist_to_start <= self.goal_tolerance
-    
-    def is_goal_region(self, states):
-        dist_to_goal = self.norm_func(states - self.goal_state)
-        return dist_to_goal <= self.goal_tolerance
-    
-    def extract_features_for_initiation_classifier(self, states):
-        """
-        for antmaze, the features are the x, y coordinates (first 2 dimensions)
-        """
-        def _numpy_extract(states):
-            if len(states.shape) == 1:
-                return states[:2]
-            assert len(states.shape) == 2, states.shape
-            return states[:, :2]
-        
-        def _list_extract(states):
-            return [state[:2] for state in states]
-        
-        if self.init_truncate:
-            if isinstance(states, np.ndarray):
-                return _numpy_extract(states)
-            if isinstance(states, list):
-                return _list_extract(states)
-            raise ValueError(f"{states} of type {type(states)}")
-        
-        return states
-    
-    @staticmethod
-    def get_position(state):
-        """
-        position in the antmaze is the x, y coordinates
-        """
-        return state[:2]
