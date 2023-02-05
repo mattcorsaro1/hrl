@@ -18,10 +18,10 @@ class D4RLGraspEnvWrapper(GoalConditionedMDPWrapper):
     def get_door_position(self, state):
         door_state = state[-8:-6]
         # Door hinge is qpos index 12, latch is 13
-        return np.array(((door_state[0])))
+        return door_state[0:1]
 
     def get_switch_position(self, state):
-        return np.array(((state[-7])))
+        return state[-7:-6]
 
     def state_space_size(self):
         return self.env.observation_space.shape[0]
