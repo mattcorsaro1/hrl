@@ -15,6 +15,14 @@ class D4RLGraspEnvWrapper(GoalConditionedMDPWrapper):
         #self.observations = self.env.get_dataset()["observations"]
         super().__init__(env, start_state, goal_state)
 
+    def get_door_position(self, state):
+        door_state = state[-8:-6]
+        # Door hinge is qpos index 12, latch is 13
+        return np.array((door_state[0]))
+
+    def get_switch_position(self, state):
+        return np.array((state[-7]))
+
     def state_space_size(self):
         return self.env.observation_space.shape[0]
     
@@ -32,16 +40,13 @@ class D4RLGraspEnvWrapper(GoalConditionedMDPWrapper):
         assert isinstance(states, (np.ndarray, torch.Tensor))
         assert isinstance(goals, (np.ndarray, torch.Tensor))
 
-        print(";;;;;;;states", states)
-        print(";;;;;;;goals", goals)
-        sys.exit()
+        breakpoint()
 
         if batched:
-            current_positions = states[:,:2]
-            goal_positions = goals[:,:2]
+            raise NotImplementedError(f'Implement batched sparse reward function.')
         else:
-            current_positions = states[:2]
-            goal_positions = goals[:2]
+            current_positions = self.get_door_position(states) if self.env.obj == "door" else self.get_switch_position(states)
+            goal_positions = goals
         distances = self.norm_func(current_positions-goal_positions)
         dones = distances <= self.goal_tolerance
 

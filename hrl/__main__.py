@@ -32,14 +32,6 @@ def get_antmaze_position(state):
     """
     return state[:2]
 
-def get_door_position(state):
-    door_state = state[-8:-6]
-    # Door hinge is qpos index 12, latch is 13
-    return np.array((door_state[0]))
-
-def get_switch_position(state):
-    return np.array((state[-7]))
-
 def extract_goal_dimensions(mdp, goal):
     def _extract(goal):
         goal_features = goal
@@ -164,7 +156,7 @@ if __name__ == "__main__":
 
         last_sars = trajectory[-1]
         final_reached_state = last_sars[-1]
-        reached_goal = get_antmaze_position(final_reached_state) if "ant" in args.environment else (get_door_position(final_reached_state) if args.environment == "door" else get_switch_position(final_reached_state))
+        reached_goal = get_antmaze_position(final_reached_state) if "ant" in args.environment else (mdp.get_door_position(final_reached_state) if args.environment == "door" else mdp.get_switch_position(final_reached_state))
         if args.use_HER:
             experience_replay(agent, mdp, trajectory, reached_goal, args.use_dense_rewards)
 
