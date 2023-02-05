@@ -40,19 +40,18 @@ class D4RLGraspEnvWrapper(GoalConditionedMDPWrapper):
         assert isinstance(states, (np.ndarray, torch.Tensor))
         assert isinstance(goals, (np.ndarray, torch.Tensor))
 
-        breakpoint()
-
         if batched:
             raise NotImplementedError(f'Implement batched sparse reward function.')
         else:
             current_positions = self.get_door_position(states) if self.env.obj == "door" else self.get_switch_position(states)
             goal_positions = goals
-        distances = self.norm_func(current_positions-goal_positions)
-        dones = distances <= self.goal_tolerance
+        dones = current_positions > goal_positions
 
         rewards = np.zeros_like(distances)
         rewards[dones==1] = 1.
         rewards[dones==0] = 0.
+
+        breakpoint()
 
         return rewards, dones
 
