@@ -47,7 +47,7 @@ class D4RLGraspEnvWrapper(GoalConditionedMDPWrapper):
             goal_positions = goals
         dones = current_positions > goal_positions
 
-        rewards = np.zeros_like(distances)
+        rewards = np.zeros_like(dones)
         rewards[dones==1] = 1.
         rewards[dones==0] = 0.
 
