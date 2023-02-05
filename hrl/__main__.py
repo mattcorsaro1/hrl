@@ -122,14 +122,10 @@ if __name__ == "__main__":
             use_dense_reward=args.use_dense_rewards
         )
     elif args.environment == "door" or args.environment == "switch":
-        env = MujocoGraspEnv(args.environment, False, reward_sparse=(not args.use_dense_rewards), gravity=True, lock_fingers_closed=True,
-                         sample_method="random", state_space="friendly")
         start_state = np.array([0])
-        goal_state = None
-        if args.environment == "door":
-            goal_state = np.array([0.5])
-        elif args.environment == "switch":
-            goal_state = np.array([3])
+        goal_state = np.array([0.5])if args.environment == "door" else np.array([3])
+        env = MujocoGraspEnv(args.environment, False, reward_sparse=(not args.use_dense_rewards), gravity=True, lock_fingers_closed=True,
+                         sample_method="random", state_space="friendly", goal_state=goal_state)
         mdp = D4RLGraspEnvWrapper(
             env,
             start_state=start_state,
