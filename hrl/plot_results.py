@@ -74,18 +74,18 @@ def main():
     plots_to_make = ["episodic_final_dist", "episodic_score", "episodic_success_rate"]#"evaluation_rewards", "task_success_rate"
 
     runs_to_plot = {}
-    runs_to_plot["ant"] = [\
-        "ant_sparse", \
-        "ant_dense", \
-        "ant_sparse_her", \
-        "ant_dense_her", \
+    runs_to_plot["door"] = [\
+        "door_0", \
+        "door_her_0", \
+    ]
+    runs_to_plot["switch"] = [\
+        "switch_0", \
+        "switch_her_0", \
     ]
 
     titles = [\
-        "Sparse", \
-        "Dense", \
-        "Sparse and HER", \
-        "Dense and HER"
+        "Baseline", \
+        "Baseline HER", \
     ]
 
     timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y_%m_%d_%H_%M_%S')
