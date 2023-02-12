@@ -124,7 +124,7 @@ def main():
             max_x_val = np.array([[len(vals) for vals in set] for set in y_val_sets_over_seed]).max()
             generatePlot(y_val_sets_over_seed, plot, titles, plot_dir_this_obj, max_x=max_x_val, leg_loc="upper left")
             if "episodic" in plot or "state" in plot:
-                generatePlot(y_val_sets_over_seed, plot + "_smoothed", titles, plot_dir_this_obj, smooth_over=20, max_x=max_x_val, leg_loc="upper left")
+                generatePlot(y_val_sets_over_seed, plot + "_smoothed", titles, plot_dir_this_obj, smooth_over=200, max_x=max_x_val, leg_loc="upper left")
                 # for the smoothed plots, also plot each method on individual plot with different line for each seed
                 for method_i in range(len(y_val_sets_over_seed)):
                     y_vals_this_method = [[y_vals] for y_vals in y_val_sets_over_seed[method_i]]
