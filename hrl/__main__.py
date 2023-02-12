@@ -143,7 +143,7 @@ if __name__ == "__main__":
 
     parser.add_argument("--sample_method",
                         required=False,
-                        choices=["random", "oracle", "classifier", "classifier_unweighted"]
+                        choices=["random", "oracle", "classifier", "classifier_unweighted"],
                         type=str,
                         default="random")
 
