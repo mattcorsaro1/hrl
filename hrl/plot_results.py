@@ -119,6 +119,11 @@ def main():
                 # For each random seed
                 for pickle_file in pickle_files:
                     y_vals_this_method.append(loadPickleFile(pickle_file, result_dir))
+                if isinstance(y_vals_this_method[0][0], np.ndarray):
+                    for val_list in y_vals_this_method:
+                        for val in val_list:
+                            assert(len(val.shape) == 1 and val.shape[0] == 1)
+                            val = val[0]
                 y_val_sets_over_seed.append(y_vals_this_method)
 
             max_x_val = np.array([[len(vals) for vals in set] for set in y_val_sets_over_seed]).max()
