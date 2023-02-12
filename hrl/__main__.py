@@ -28,7 +28,7 @@ from hrl.wrappers.mlp_classifier import BinaryMLPClassifier
 
 def compute_weights_unbatched(states, labels, values, threshold):
     n_states = states.shape[0]
-    weights = numpy.zeros((n_states,))
+    weights = np.zeros((n_states,))
     for i in range(n_states):
         label = labels[i]
         state_value = values[i]
@@ -63,7 +63,7 @@ def get_weights(states, labels, learner):
     print("^^^^^^SD", step_distribution)'''
 
     # Determine the threshold. It has units of # steps.
-    threshold = numpy.median(value_distribution)  # TODO: This should be a percentile based on class ratios
+    threshold = np.median(value_distribution)  # TODO: This should be a percentile based on class ratios
     #print(f"Set the threshold to {threshold}")
     #print("^^^^^^Threshold", threshold)
 
@@ -230,7 +230,7 @@ if __name__ == "__main__":
 
             grasp_indices = classifier_training_dict.keys()
             # List of ints
-            classifier_training_labels = numpy.array([classifier_training_dict[grasp_index] for grasp_index in grasp_indices])
+            classifier_training_labels = np..array([classifier_training_dict[grasp_index] for grasp_index in grasp_indices])
             if clf.should_train(classifier_training_labels):
                 # List of tensors of lists
                 grasp_indices_tensor = torch.LongTensor(list(grasp_indices))
@@ -246,14 +246,14 @@ if __name__ == "__main__":
                 # Set weights for agent to draw new examples
                 env.classifier_probs = clf.predict_proba(env.cache_torch_state.to(clf.device).float()).detach().cpu().numpy()
                 env.classifier_probs = env.classifier_probs.reshape((-1))
-                if (numpy.isnan(env.classifier_probs).any()):
+                if (np.isnan(env.classifier_probs).any()):
                     print("~~~~~Array contains nans, setting nan probs to 0")
-                    env.classifier_probs[numpy.isnan(env.classifier_probs)] = 0
+                    env.classifier_probs[np.isnan(env.classifier_probs)] = 0
                 env.classifier_probs = softmax(env.classifier_probs)
                 if episodes % 1000 == 0:
                     prob_output_file = classifier_prob_dir + "/cached_grasp_{}_prob_{}_seed_{}_episode_{}.npy".format(args.sample_method, args.environment, args.seed, episode)
                     print("Now writing probabilities to", prob_output_file)
-                    numpy.save(prob_output_file, env.classifier_probs)
+                    np.save(prob_output_file, env.classifier_probs)
 
         last_sars = trajectory[-1]
         final_reached_state = last_sars[-1]
