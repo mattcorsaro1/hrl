@@ -161,7 +161,7 @@ if __name__ == "__main__":
     meta_logger = MetaLogger(saving_dir)
     classifier_prob_dir = None
     if "classifier" in args.sample_method:
-        classifier_prob_dir = utils.create_log_dir(
+        classifier_prob_dir = create_log_dir(
             os.path.join(saving_dir, "classifier_probs"))
     logging_filename = f"seed_{args.seed}.pkl"
 
