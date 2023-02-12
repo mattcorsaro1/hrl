@@ -134,7 +134,7 @@ if __name__ == "__main__":
         raise ValueError(f'Unknown environment {args.environment}')
 
     torch.manual_seed(0)
-    seeding.seed(0, random, np)
+    seeding.seed(args.seed, random, np)
     seeding.seed(args.seed, gym, env)
 
     agent = TD3(state_dim=mdp.state_space_size()+goal_state.shape[0],
