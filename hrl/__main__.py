@@ -230,7 +230,7 @@ if __name__ == "__main__":
 
             grasp_indices = classifier_training_dict.keys()
             # List of ints
-            classifier_training_labels = np..array([classifier_training_dict[grasp_index] for grasp_index in grasp_indices])
+            classifier_training_labels = np.array([classifier_training_dict[grasp_index] for grasp_index in grasp_indices])
             if clf.should_train(classifier_training_labels):
                 # List of tensors of lists
                 grasp_indices_tensor = torch.LongTensor(list(grasp_indices))
