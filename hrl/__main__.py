@@ -24,7 +24,7 @@ from hrl.wrappers.MujocoGraspEnv_wrapper import D4RLGraspEnvWrapper
 sys.path.insert(1, os.path.join(sys.path[0], '/users/mcorsaro/Software/GraspInitiation/scripts/'))
 sys.path.insert(1, os.path.join(sys.path[0], '/users/mcorsaro/Software/GraspInitiation/'))
 from MujocoGraspEnv import MujocoGraspEnv
-from common.mlp_classifier import BinaryMLPClassifier
+from hrl.wrappers.mlp_classifier import BinaryMLPClassifier
 
 def compute_weights_unbatched(states, labels, values, threshold):
     n_states = states.shape[0]
