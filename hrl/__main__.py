@@ -196,6 +196,7 @@ if __name__ == "__main__":
     seeding.seed(args.seed, random, np)
     seeding.seed(args.seed, gym, env)
 
+    print(";;;;;;State and action space sizes:", mdp.state_space_size(), mdp.action_space_size())
     agent = TD3(state_dim=mdp.state_space_size()+goal_state.shape[0],
                 action_dim=mdp.action_space_size(),
                 max_action=1.,
