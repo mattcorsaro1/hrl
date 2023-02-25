@@ -206,7 +206,7 @@ if __name__ == "__main__":
     clf = None
     if "classifier" in args.sample_method:
         clf = BinaryMLPClassifier(\
-            env.cache_torch_state.shape[1], \
+            env.cache_torch_state.shape[1]+goal_state.shape[0], \
             torch.device('cuda' if torch.cuda.is_available() else 'cpu'), \
             threshold=0.5, \
             batch_size=5)
