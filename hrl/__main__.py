@@ -154,8 +154,6 @@ if __name__ == "__main__":
                         help="specify the goal state of the environment, (0, 8) for example")
     args = parser.parse_args()
 
-    # TODO(mcorsaro): Add additional parameters (learning rate, HER parameters)
-
     saving_dir = os.path.join(args.results_dir, args.experiment_name)
     create_log_dir(saving_dir)
     meta_logger = MetaLogger(saving_dir)
@@ -206,7 +204,7 @@ if __name__ == "__main__":
     clf = None
     if "classifier" in args.sample_method:
         clf = BinaryMLPClassifier(\
-            env.cache_torch_state.shape[1]+goal_state.shape[0], \
+            env.cache_torch_state.shape[1], \
             torch.device('cuda' if torch.cuda.is_available() else 'cpu'), \
             threshold=0.5, \
             batch_size=5)
@@ -235,7 +233,9 @@ if __name__ == "__main__":
             classifier_training_labels = np.array([classifier_training_dict[grasp_index] for grasp_index in grasp_indices])
             grasp_indices_tensor = torch.LongTensor(list(grasp_indices))
             classifier_training_examples = env.cache_torch_state.index_select(0, grasp_indices_tensor)
-            W = get_weights(classifier_training_examples.to(agent.device), classifier_training_labels, agent).astype(float)
+
+            augmented_states = np.append(classifier_training_examples, np.repeat(goal_state[:, np.newaxis], classifier_training_examples.shape[0], axis=0), axis=-1)
+            W = get_weights(augmented_states, classifier_training_labels, agent).astype(float)
             clf.fit(classifier_training_examples.to(clf.device).float(), classifier_training_labels, W, n_epochs=10)
             env.classifier_probs = clf.predict_proba(env.cache_torch_state.to(clf.device).float()).detach().cpu().numpy()
             env.classifier_probs = env.classifier_probs.reshape((-1))
