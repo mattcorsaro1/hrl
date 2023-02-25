@@ -227,6 +227,23 @@ if __name__ == "__main__":
             # Dictionary of latest grasp success label for each grasp index
             classifier_training_dict[grasp_index] = success_label
 
+            ####################################################
+            import random
+            for i in range(50):
+                classifier_training_dict[i] = random.randint(0,1)
+            grasp_indices = classifier_training_dict.keys()
+            classifier_training_labels = np.array([classifier_training_dict[grasp_index] for grasp_index in grasp_indices])
+            grasp_indices_tensor = torch.LongTensor(list(grasp_indices))
+            classifier_training_examples = env.cache_torch_state.index_select(0, grasp_indices_tensor)
+            W = get_weights(classifier_training_examples.to(agent.device), classifier_training_labels, agent).astype(float)
+            clf.fit(classifier_training_examples.to(clf.device).float(), classifier_training_labels, W, n_epochs=10)
+            env.classifier_probs = clf.predict_proba(env.cache_torch_state.to(clf.device).float()).detach().cpu().numpy()
+            env.classifier_probs = env.classifier_probs.reshape((-1))
+            print(";;;;CLF probs", env.classifier_probs)
+            sys.exit()
+
+            ####################################################
+
             grasp_indices = classifier_training_dict.keys()
             # List of ints
             classifier_training_labels = np.array([classifier_training_dict[grasp_index] for grasp_index in grasp_indices])
