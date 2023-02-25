@@ -53,7 +53,7 @@ def get_weights(states, labels, learner):
     # Compute updated weights
     """ Get the value distribution for the input states. """
     # shape: (num grasps, 200)
-    value_distribution = learner.get_values(states).detach().cpu().numpy()
+    value_distribution = learner.get_values(states)
     print(";;;;;;;;;;VD SHAPE", value_distribution.shape)
     #print("^^^^^^")
     #print("^^^^^^VD", value_distribution)
