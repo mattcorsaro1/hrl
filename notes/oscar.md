@@ -43,6 +43,25 @@ source ~/installations/virtualenvs/mujoco/bin/activate
 python -m hrl --experiment_name hrl_test_0 --results_dir ~/scratch/results --device 'cuda:0' --environment antmaze-umaze-v0 --seed 0 --episodes 1000 --use_dense_rewards --use_HER
 ```
 
+Example of 4 basic robot things to run:
+
+```
+onager prelaunch --exclude-job-id +jobname door_her_0 +command "python -m hrl --experiment_name door_her_0 --results_dir ~/scratch/results --device 'cuda:0' --environment door --episodes 20000 --use_HER" +arg --seed 0 1 +no-tag-arg --seed
+
+onager prelaunch --exclude-job-id +jobname door_0 +command "python -m hrl --experiment_name door_0 --results_dir ~/scratch/results --device 'cuda:0' --environment door --episodes 20000" +arg --seed 0 1 +no-tag-arg --seed
+
+onager prelaunch --exclude-job-id +jobname switch_her_0 +command "python -m hrl --experiment_name switch_her_0 --results_dir ~/scratch/results --device 'cuda:0' --environment switch --episodes 20000 --use_HER" +arg --seed 0 1 +no-tag-arg --seed
+
+onager prelaunch --exclude-job-id +jobname switch_0 +command "python -m hrl --experiment_name switch_0 --results_dir ~/scratch/results --device 'cuda:0' --environment switch --episodes 20000" +arg --seed 0 1 +no-tag-arg --seed
+
+onager launch --backend slurm --jobname <door_her_0> --duration 1-23:59:59 --gpus 1 --cpus 4 --mem 44 --partition 3090-gcondo
+```
+
+Test
+```
+python -m hrl --experiment_name switch_clf_test --results_dir ~/scratch/results --device 'cuda:0' --environment switch --sample_method classifier --episodes 20 --seed 0
+```
+
 Example of 4 things to run:
 ```
 onager prelaunch --exclude-job-id +jobname ant_dense_her +command "python -m hrl --experiment_name ant_dense_her --results_dir ~/scratch/results --device 'cuda:0' --environment antmaze-umaze-v0 --episodes 3000 --use_dense_rewards --use_HER" +arg --seed 0 1 +no-tag-arg --seed
