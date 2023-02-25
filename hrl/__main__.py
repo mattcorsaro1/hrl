@@ -228,7 +228,7 @@ if __name__ == "__main__":
             ####################################################
             import random
             for i in range(50):
-                classifier_training_dict[i] = random.randint(0,1)
+                classifier_training_dict[i] = float(random.randint(0,1))
             grasp_indices = classifier_training_dict.keys()
             classifier_training_labels = np.array([classifier_training_dict[grasp_index] for grasp_index in grasp_indices])
             grasp_indices_tensor = torch.LongTensor(list(grasp_indices))
