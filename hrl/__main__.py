@@ -54,7 +54,6 @@ def get_weights(states, labels, learner):
     """ Get the value distribution for the input states. """
     # shape: (num grasps, 200)
     value_distribution = learner.get_values(states)
-    print(";;;;;;;;;;VD SHAPE", value_distribution.shape)
     #print("^^^^^^")
     #print("^^^^^^VD", value_distribution)
 
@@ -225,7 +224,7 @@ if __name__ == "__main__":
             # Dictionary of latest grasp success label for each grasp index
             classifier_training_dict[grasp_index] = success_label
 
-            ####################################################
+            """####################################################
             import random
             for i in range(50):
                 classifier_training_dict[i] = float(random.randint(0,1))
@@ -242,7 +241,7 @@ if __name__ == "__main__":
             print(";;;;CLF probs", env.classifier_probs)
             sys.exit()
 
-            ####################################################
+            ####################################################"""
 
             grasp_indices = classifier_training_dict.keys()
             # List of ints
@@ -255,8 +254,8 @@ if __name__ == "__main__":
                 if args.sample_method == "classifier_unweighted":
                     clf.fit(classifier_training_examples.to(clf.device).float(), classifier_training_labels, n_epochs=10)
                 else:
-                    W = get_weights(classifier_training_examples.to(agent.device), classifier_training_labels, agent).astype(float)
-                    print(";;;;;;;Received weights of shape", W.shape)
+                    augmented_states = np.append(classifier_training_examples, np.repeat(goal_state[:, np.newaxis], classifier_training_examples.shape[0], axis=0), axis=-1)
+                    W = get_weights(augmented_states, classifier_training_labels, agent).astype(float)
                     clf.fit(classifier_training_examples.to(clf.device).float(), classifier_training_labels, W, n_epochs=10)
 
                 # Set weights for agent to draw new examples
