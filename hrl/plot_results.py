@@ -77,15 +77,18 @@ def main():
     runs_to_plot["door"] = [\
         "door_0", \
         "door_her_0", \
+        "door_her_oracle_0", \
     ]
     runs_to_plot["switch"] = [\
         "switch_0", \
         "switch_her_0", \
+        "switch_her_oracle_0", \
     ]
 
     titles = [\
         "Baseline", \
         "Baseline HER", \
+        "Oracle HER", \
     ]
 
     timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y_%m_%d_%H_%M_%S')
