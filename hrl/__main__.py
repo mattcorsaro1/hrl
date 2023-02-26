@@ -225,7 +225,7 @@ if __name__ == "__main__":
             # Dictionary of latest grasp success label for each grasp index
             classifier_training_dict[grasp_index] = success_label
 
-            ####################################################
+            '''####################################################
             import random
             for i in range(50):
                 classifier_training_dict[i] = float(random.randint(0,1))
@@ -252,7 +252,7 @@ if __name__ == "__main__":
             print(";;;;softmax", env.classifier_probs.shape)
             sys.exit()
 
-            ####################################################
+            ####################################################'''
 
             grasp_indices = classifier_training_dict.keys()
             # List of ints
