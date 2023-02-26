@@ -25,6 +25,7 @@ sys.path.insert(1, os.path.join(sys.path[0], '/users/mcorsaro/Software/GraspInit
 sys.path.insert(1, os.path.join(sys.path[0], '/users/mcorsaro/Software/GraspInitiation/'))
 from MujocoGraspEnv import MujocoGraspEnv
 from hrl.wrappers.mlp_classifier import BinaryMLPClassifier
+from scipy.special import softmax
 
 def compute_weights_unbatched(states, labels, values, threshold):
     n_states = states.shape[0]
@@ -232,15 +233,23 @@ if __name__ == "__main__":
             classifier_training_labels = np.array([classifier_training_dict[grasp_index] for grasp_index in grasp_indices])
             grasp_indices_tensor = torch.LongTensor(list(grasp_indices))
             classifier_training_examples = env.cache_torch_state.index_select(0, grasp_indices_tensor)
-
+            print(";;;;;Training ex", classifier_training_examples.shape)
             augmented_states = np.append(classifier_training_examples, np.repeat(goal_state[:, np.newaxis], classifier_training_examples.shape[0], axis=0), axis=-1)
+            print(";;;;;Augmented ex", augmented_states.shape)
             W = get_weights(augmented_states, classifier_training_labels, agent).astype(float)
+            print(";;;;;Weights", W.shape)
             clf.fit(classifier_training_examples.to(clf.device).float(), classifier_training_labels, W, n_epochs=10)
+            all_states = env.cache_torch_state.to(clf.device).float()
+            print(";;;;;all states", all_states.shape)
             env.classifier_probs = clf.predict_proba(env.cache_torch_state.to(clf.device).float()).detach().cpu().numpy()
+            print(";;;;env.classifier_probs", env.classifier_probs.shape)
             env.classifier_probs = env.classifier_probs.reshape((-1))
-            print(";;;;CLF probs", env.classifier_probs)
-            env.classifier_probs = clf.predict_proba(env.cache_torch_state.to(clf.device).float()).detach().cpu().numpy()
-            env.classifier_probs = env.classifier_probs.reshape((-1))
+            print(";;;;CLF probs", env.classifier_probs.shape)
+            if (np.isnan(env.classifier_probs).any()):
+                print("~~~~~Array contains nans, setting nan probs to 0")
+                env.classifier_probs[np.isnan(env.classifier_probs)] = 0
+            env.classifier_probs = softmax(env.classifier_probs)
+            print(";;;;softmax", env.classifier_probs.shape)
             sys.exit()
 
             ####################################################
