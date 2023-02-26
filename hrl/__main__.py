@@ -224,7 +224,7 @@ if __name__ == "__main__":
             # Dictionary of latest grasp success label for each grasp index
             classifier_training_dict[grasp_index] = success_label
 
-            """####################################################
+            ####################################################
             import random
             for i in range(50):
                 classifier_training_dict[i] = float(random.randint(0,1))
@@ -239,9 +239,11 @@ if __name__ == "__main__":
             env.classifier_probs = clf.predict_proba(env.cache_torch_state.to(clf.device).float()).detach().cpu().numpy()
             env.classifier_probs = env.classifier_probs.reshape((-1))
             print(";;;;CLF probs", env.classifier_probs)
+            env.classifier_probs = clf.predict_proba(env.cache_torch_state.to(clf.device).float()).detach().cpu().numpy()
+            env.classifier_probs = env.classifier_probs.reshape((-1))
             sys.exit()
 
-            ####################################################"""
+            ####################################################
 
             grasp_indices = classifier_training_dict.keys()
             # List of ints
