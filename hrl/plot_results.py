@@ -78,17 +78,29 @@ def main():
         "door_0", \
         "door_her_0", \
         "door_her_oracle_0", \
+        "door_clf_2", \
+        "door_clf_her_2", \
+        "door_clf_uw_2", \
+        "door_clf_uw_her_2", \
     ]
     runs_to_plot["switch"] = [\
         "switch_0", \
         "switch_her_0", \
         "switch_her_oracle_0", \
+        "switch_clf_2", \
+        "switch_clf_her_2", \
+        "switch_clf_uw_2", \
+        "switch_clf_uw_her_2", \
     ]
 
     titles = [\
         "Baseline", \
         "Baseline HER", \
         "Oracle HER", \
+        "CLF", \
+        "CLF HER", \
+        "UW CLF", \
+        "UW CLF HER", \
     ]
 
     timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y_%m_%d_%H_%M_%S')
