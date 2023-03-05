@@ -276,7 +276,7 @@ if __name__ == "__main__":
                     print("~~~~~Array contains nans, setting nan probs to 0")
                     env.classifier_probs[np.isnan(env.classifier_probs)] = 0
                 env.classifier_probs = softmax(env.classifier_probs)
-                if episodes % 1000 == 0:
+                if episode % 1000 == 0:
                     prob_output_file = classifier_prob_dir + "/cached_grasp_{}_prob_{}_seed_{}_episode_{}.npy".format(args.sample_method, args.environment, args.seed, episode)
                     print("Now writing probabilities to", prob_output_file)
                     np.save(prob_output_file, env.classifier_probs)
