@@ -72,7 +72,8 @@ def generatePlot(y_val_sets_over_seed, plot_title, labels, plot_dir_this_obj, ma
     if plot_title != None:
         if plot_title == "episodic_success_rate_smoothed":
             plot_title = "Episodic Success Rate"
-        ax.title(plot_title)
+        #plt.title(plot_title)
+        ax.set_title(plot_title)
     plt.savefig(plot_filename)
     plt.close()
 
