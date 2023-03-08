@@ -67,7 +67,7 @@ def generatePlot(y_val_sets_over_seed, plot_title, labels, plot_dir_this_obj, ma
 
     # Put a legend below current axis
     ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05),
-              fancybox=True, shadow=True)
+              fancybox=True, shadow=True, ncol=len(y_val_sets_over_seed))
 
     if plot_title != None:
         if plot_title == "episodic_success_rate_smoothed":
