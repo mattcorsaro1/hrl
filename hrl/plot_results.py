@@ -58,7 +58,8 @@ def generatePlot(y_val_sets_over_seed, plot_title, labels, plot_dir_this_obj, ma
         y_err_max = [y_avg[i]+y_err[i] for i in range(len(y_avg))]
         ax.fill_between(x_vals, y_err_min, y_err_max, alpha=0.2)
     if max_x is not None:
-        ax.xlim([0, max_x])
+        #plt.xlim([0, max_x])
+        ax.set_xlim(0, max_x)
     #plt.legend(loc=leg_loc)
     box = ax.get_position()
     ax.set_position([box.x0, box.y0 + box.height * 0.1,
