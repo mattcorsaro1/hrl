@@ -22,6 +22,8 @@ def loadPickleFile(filename, directory):
 def generatePlot(y_val_sets_over_seed, plot_title, labels, plot_dir_this_obj, max_x=None, leg_loc="upper left", smooth_over=None):
     print("Now saving", plot_title, "plot in", plot_dir_this_obj)
     plot_filename = plot_dir_this_obj + "/" + plot_title + ".png"
+    fig = plt.figure()
+    ax = plt.subplot(111)
     #assert(len(y_val_sets_over_seed) == len(labels))
     if smooth_over is not None:
         for method_i in range(len(y_val_sets_over_seed)):
@@ -51,17 +53,25 @@ def generatePlot(y_val_sets_over_seed, plot_title, labels, plot_dir_this_obj, ma
         x_vals = list(range(len(y_avg)))
         if smooth_over is not None:
             x_vals = [val + smooth_over for val in x_vals]
-        plt.plot(x_vals, y_avg, label=labels[method_i])
+        ax.plot(x_vals, y_avg, label=labels[method_i])
         y_err_min = [y_avg[i]-y_err[i] for i in range(len(y_avg))]
         y_err_max = [y_avg[i]+y_err[i] for i in range(len(y_avg))]
-        plt.fill_between(x_vals, y_err_min, y_err_max, alpha=0.2)
+        ax.fill_between(x_vals, y_err_min, y_err_max, alpha=0.2)
     if max_x is not None:
-        plt.xlim([0, max_x])
-    plt.legend(loc=leg_loc)
+        ax.xlim([0, max_x])
+    #plt.legend(loc=leg_loc)
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0 + box.height * 0.1,
+                     box.width, box.height * 0.9])
+
+    # Put a legend below current axis
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05),
+              fancybox=True, shadow=True)
+
     if plot_title != None:
         if plot_title == "episodic_success_rate_smoothed":
             plot_title = "Episodic Success Rate"
-        plt.title(plot_title)
+        ax.title(plot_title)
     plt.savefig(plot_filename)
     plt.close()
 
@@ -76,40 +86,41 @@ def main():
     runs_to_plot = {}
     runs_to_plot["door"] = [\
         "door_0", \
-        "door_her_0", \
+        #"door_her_0", \
         "door_oracle_3", \
-        "door_her_oracle_0", \
+        #"door_her_oracle_0", \
         "door_clf_3", \
-        "door_clf_her_3", \
+        #"door_clf_her_3", \
         "door_clf_uw_3", \
-        "door_clf_uw_her_3", \
+        #"door_clf_uw_her_3", \
     ]
     runs_to_plot["switch"] = [\
-        "switch_0", \
+        #"switch_0", \
         "switch_her_0", \
+        #"switch_her_oracle_0", \
         "switch_her_oracle_0", \
-        "switch_her_oracle_0", \
-        "switch_clf_2", \
+        #"switch_clf_2", \
         "switch_clf_her_3", \
-        "switch_clf_uw_2", \
+        #"switch_clf_uw_2", \
         "switch_clf_uw_her_3", \
     ]
 
     titles = [\
         "Baseline", \
-        "Baseline HER", \
-        "Oracle (Door)", \
-        "Oracle HER", \
+        #"Baseline HER", \
+        "Oracle", \
+        # (Door)", \
+        #"Oracle HER", \
         "CLF", \
-        "CLF HER", \
+        #"CLF HER", \
         "UW CLF", \
-        "UW CLF HER", \
+        #"UW CLF HER", \
     ]
 
     timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y_%m_%d_%H_%M_%S')
     plot_dir = args.data_dir + '/plots_' + timestamp
     os.mkdir(plot_dir)
-    print("Copy these results with:\n", "scp -r mcorsaro@ssh.ccv.brown.edu:{} .".format(plot_dir), "\n")
+    print("Copy these results with:\n", "scp -r ccv:{} .".format(plot_dir), "\n")#mcorsaro@ssh.ccv.brown.edu
     for obj in runs_to_plot:
         #runs_to_plot_this_obj = [obj + run_title for run_title in runs_to_plot]
         runs_to_plot_this_obj = runs_to_plot[obj]
