@@ -77,25 +77,28 @@ def main():
     runs_to_plot["door"] = [\
         "door_0", \
         "door_her_0", \
+        "door_oracle_3", \
         "door_her_oracle_0", \
-        "door_clf_2", \
-        "door_clf_her_2", \
-        "door_clf_uw_2", \
-        "door_clf_uw_her_2", \
+        "door_clf_3", \
+        "door_clf_her_3", \
+        "door_clf_uw_3", \
+        "door_clf_uw_her_3", \
     ]
     runs_to_plot["switch"] = [\
         "switch_0", \
         "switch_her_0", \
         "switch_her_oracle_0", \
+        "switch_her_oracle_0", \
         "switch_clf_2", \
-        "switch_clf_her_2", \
+        "switch_clf_her_3", \
         "switch_clf_uw_2", \
-        "switch_clf_uw_her_2", \
+        "switch_clf_uw_her_3", \
     ]
 
     titles = [\
         "Baseline", \
         "Baseline HER", \
+        "Oracle (Door)", \
         "Oracle HER", \
         "CLF", \
         "CLF HER", \
