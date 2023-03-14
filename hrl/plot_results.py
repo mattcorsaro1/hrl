@@ -87,24 +87,32 @@ def main():
 
     runs_to_plot = {}
     runs_to_plot["door"] = [\
-        "door_0", \
+        "door_baseline_trial_0",\
+        #"door_0", \
         #"door_her_0", \
-        "door_oracle_3", \
+        "door_oracle_trial_0", \
+        #"door_oracle_3", \
         #"door_her_oracle_0", \
-        "door_clf_3", \
+        "door_clf_trial_0", \
+        #"door_clf_3", \
         #"door_clf_her_3", \
-        "door_clf_uw_3", \
+        "door_uw_clf_trial_0"
+        #"door_clf_uw_3", \
         #"door_clf_uw_her_3", \
     ]
-    runs_to_plot["switch"] = [\
+    runs_to_plot["switch_HER"] = [\
+        "switch_baseline_her_trial_0",\
         #"switch_0", \
-        "switch_her_0", \
+        #"switch_her_0", \
+        "switch_oracle_her_trial_0", \
         #"switch_her_oracle_0", \
-        "switch_her_oracle_0", \
+        #"switch_her_oracle_0", \
+        "switch_clf_her_trial_0", \
         #"switch_clf_2", \
-        "switch_clf_her_3", \
+        #"switch_clf_her_3", \
+        "switch_uw_clf_her_trial_0"
         #"switch_clf_uw_2", \
-        "switch_clf_uw_her_3", \
+        #"switch_clf_uw_her_3", \
     ]
 
     titles = [\
