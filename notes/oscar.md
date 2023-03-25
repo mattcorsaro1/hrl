@@ -57,6 +57,26 @@ onager prelaunch --exclude-job-id +jobname switch_0 +command "python -m hrl --ex
 onager launch --backend slurm --jobname <door_her_0> --duration 1-23:59:59 --gpus 1 --cpus 4 --mem 44 --partition 3090-gcondo
 ```
 
+```
+onager prelaunch --exclude-job-id +jobname switch_clf_2 +command "python -m hrl --experiment_name switch_clf_2 --results_dir ~/scratch/results --device 'cuda:0' --environment switch --episodes 20000 --sample_method classifier" +arg --seed 0 +no-tag-arg --seed
+onager prelaunch --exclude-job-id +jobname switch_clf_her_2 +command "python -m hrl --experiment_name switch_clf_her_2 --results_dir ~/scratch/results --device 'cuda:0' --environment switch --episodes 20000 --sample_method classifier --use_HER" +arg --seed 0 +no-tag-arg --seed
+onager prelaunch --exclude-job-id +jobname switch_clf_uw_2 +command "python -m hrl --experiment_name switch_clf_uw_2 --results_dir ~/scratch/results --device 'cuda:0' --environment switch --episodes 20000 --sample_method classifier_unweighted" +arg --seed 0 +no-tag-arg --seed
+onager prelaunch --exclude-job-id +jobname switch_clf_uw_her_2 +command "python -m hrl --experiment_name switch_clf_uw_her_2 --results_dir ~/scratch/results --device 'cuda:0' --environment switch --episodes 20000 --sample_method classifier_unweighted --use_HER" +arg --seed 0 +no-tag-arg --seed
+onager prelaunch --exclude-job-id +jobname door_clf_2 +command "python -m hrl --experiment_name door_clf_2 --results_dir ~/scratch/results --device 'cuda:0' --environment door --episodes 20000 --sample_method classifier" +arg --seed 0 +no-tag-arg --seed
+onager prelaunch --exclude-job-id +jobname door_clf_her_2 +command "python -m hrl --experiment_name door_clf_her_2 --results_dir ~/scratch/results --device 'cuda:0' --environment door --episodes 20000 --sample_method classifier --use_HER" +arg --seed 0 +no-tag-arg --seed
+onager prelaunch --exclude-job-id +jobname door_clf_uw_2 +command "python -m hrl --experiment_name door_clf_uw_2 --results_dir ~/scratch/results --device 'cuda:0' --environment door --episodes 20000 --sample_method classifier_unweighted" +arg --seed 0 +no-tag-arg --seed
+onager prelaunch --exclude-job-id +jobname door_clf_uw_her_2 +command "python -m hrl --experiment_name door_clf_uw_her_2 --results_dir ~/scratch/results --device 'cuda:0' --environment door --episodes 20000 --sample_method classifier_unweighted --use_HER" +arg --seed 0 +no-tag-arg --seed
+
+onager launch --backend slurm --jobname switch_clf_2 --duration 1-23:59:59 --gpus 1 --cpus 4 --mem 44 --partition 3090-gcondo
+onager launch --backend slurm --jobname switch_clf_her_2 --duration 1-23:59:59 --gpus 1 --cpus 4 --mem 44 --partition 3090-gcondo
+onager launch --backend slurm --jobname switch_clf_uw_2 --duration 1-23:59:59 --gpus 1 --cpus 4 --mem 44 --partition 3090-gcondo
+onager launch --backend slurm --jobname switch_clf_uw_her_2 --duration 1-23:59:59 --gpus 1 --cpus 4 --mem 44 --partition 3090-gcondo
+onager launch --backend slurm --jobname door_clf_2 --duration 1-23:59:59 --gpus 1 --cpus 4 --mem 44 --partition 3090-gcondo
+onager launch --backend slurm --jobname door_clf_her_2 --duration 1-23:59:59 --gpus 1 --cpus 4 --mem 44 --partition 3090-gcondo
+onager launch --backend slurm --jobname door_clf_uw_2 --duration 1-23:59:59 --gpus 1 --cpus 4 --mem 44 --partition 3090-gcondo
+onager launch --backend slurm --jobname door_clf_uw_her_2 --duration 1-23:59:59 --gpus 1 --cpus 4 --mem 44 --partition 3090-gcondo
+```
+
 Test
 ```
 python -m hrl --experiment_name switch_clf_test --results_dir ~/scratch/results --device 'cuda:0' --environment switch --sample_method classifier --episodes 20 --seed 0

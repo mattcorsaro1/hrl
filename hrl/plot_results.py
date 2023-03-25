@@ -86,7 +86,40 @@ def main():
     plots_to_make = ["episodic_final_dist", "episodic_score", "episodic_success_rate"]#"evaluation_rewards", "task_success_rate"
 
     runs_to_plot = {}
+    runs_to_plot["door_HER"] = [\
+        "door_gs0_0_HER_3e-3_3e-3", \
+        "door_gs0_1_HER_3e-3_3e-4", \
+        "door_gs0_2_HER_3e-3_3e-5", \
+        "door_gs0_3_HER_3e-4_3e-3", \
+        "door_gs0_4_HER_3e-4_3e-4", \
+        "door_gs0_5_HER_3e-4_3e-5", \
+        "door_gs0_6_HER_3e-5_3e-3", \
+        "door_gs0_7_HER_3e-5_3e-4", \
+        "door_gs0_8_HER_3e-5_3e-5", \
+    ]
     runs_to_plot["door"] = [\
+        "door_gs0_9_3e-3_3e-3", \
+        "door_gs0_10_3e-3_3e-4", \
+        "door_gs0_11_3e-3_3e-5", \
+        "door_gs0_12_3e-4_3e-3", \
+        "door_gs0_13_3e-4_3e-4", \
+        "door_gs0_14_3e-4_3e-5", \
+        "door_gs0_15_3e-5_3e-3", \
+        "door_gs0_16_3e-5_3e-4", \
+        "door_gs0_17_3e-5_3e-5", \
+    ]
+    titles = [\
+        "3e-3_3e-3", \
+        "3e-3_3e-4", \
+        "3e-3_3e-5", \
+        "3e-4_3e-3", \
+        "3e-4_3e-4", \
+        "3e-4_3e-5", \
+        "3e-5_3e-3", \
+        "3e-5_3e-4", \
+        "3e-5_3e-5", \
+    ]
+    '''runs_to_plot["door"] = [\
         "door_baseline_trial_0",\
         #"door_0", \
         #"door_her_0", \
@@ -125,7 +158,7 @@ def main():
         #"CLF HER", \
         "UW CLF", \
         #"UW CLF HER", \
-    ]
+    ]'''
 
     timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y_%m_%d_%H_%M_%S')
     plot_dir = args.data_dir + '/plots_' + timestamp
