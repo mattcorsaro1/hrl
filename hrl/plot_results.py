@@ -21,7 +21,7 @@ def loadPickleFile(filename, directory):
     except Exception as e:
         print(f'Exception while reading {filename} in {directory}: {e}')
         raise e
-    return values
+    return valuesz
 
 def generatePlot(y_val_sets_over_seed, plot_title, labels, plot_dir_this_obj, max_x=None, leg_loc="upper left", smooth_over=None):
     print("Now saving", plot_title, "plot in", plot_dir_this_obj)
@@ -91,26 +91,26 @@ def main():
 
     runs_to_plot = {}
     runs_to_plot["door_HER"] = [\
-        "door_gs0_0_HER_3e-3_3e-3", \
-        "door_gs0_1_HER_3e-3_3e-4", \
-        "door_gs0_2_HER_3e-3_3e-5", \
-        "door_gs0_3_HER_3e-4_3e-3", \
-        "door_gs0_4_HER_3e-4_3e-4", \
-        "door_gs0_5_HER_3e-4_3e-5", \
-        "door_gs0_6_HER_3e-5_3e-3", \
-        "door_gs0_7_HER_3e-5_3e-4", \
-        "door_gs0_8_HER_3e-5_3e-5", \
+        "door_gs1_0_HER_3e-3_3e-3", \
+        "door_gs1_1_HER_3e-3_3e-4", \
+        "door_gs1_2_HER_3e-3_3e-5", \
+        "door_gs1_3_HER_3e-4_3e-3", \
+        "door_gs1_4_HER_3e-4_3e-4", \
+        "door_gs1_5_HER_3e-4_3e-5", \
+        "door_gs1_6_HER_3e-5_3e-3", \
+        "door_gs1_7_HER_3e-5_3e-4", \
+        "door_gs1_8_HER_3e-5_3e-5", \
     ]
     runs_to_plot["door"] = [\
-        "door_gs0_9_3e-3_3e-3", \
-        "door_gs0_10_3e-3_3e-4", \
-        "door_gs0_11_3e-3_3e-5", \
-        "door_gs0_12_3e-4_3e-3", \
-        "door_gs0_13_3e-4_3e-4", \
-        "door_gs0_14_3e-4_3e-5", \
-        "door_gs0_15_3e-5_3e-3", \
-        "door_gs0_16_3e-5_3e-4", \
-        "door_gs0_17_3e-5_3e-5", \
+        "door_gs1_9_3e-3_3e-3", \
+        "door_gs1_10_3e-3_3e-4", \
+        "door_gs1_11_3e-3_3e-5", \
+        "door_gs1_12_3e-4_3e-3", \
+        "door_gs1_13_3e-4_3e-4", \
+        "door_gs1_14_3e-4_3e-5", \
+        "door_gs1_15_3e-5_3e-3", \
+        "door_gs1_16_3e-5_3e-4", \
+        "door_gs1_17_3e-5_3e-5", \
     ]
     titles = [\
         "3e-3_3e-3", \
