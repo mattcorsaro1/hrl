@@ -21,7 +21,7 @@ def loadPickleFile(filename, directory):
     except Exception as e:
         print(f'Exception while reading {filename} in {directory}: {e}')
         raise e
-    return valuesz
+    return values
 
 def generatePlot(y_val_sets_over_seed, plot_title, labels, plot_dir_this_obj, max_x=None, leg_loc="upper left", smooth_over=None):
     print("Now saving", plot_title, "plot in", plot_dir_this_obj)
