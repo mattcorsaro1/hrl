@@ -71,7 +71,7 @@ def generatePlot(y_val_sets_over_seed, plot_title, labels, plot_dir_this_obj, ma
 
     # Put a legend below current axis
     ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05),
-              fancybox=True, shadow=True, ncol=len(y_val_sets_over_seed))
+              fancybox=True, shadow=True, ncol=len(y_val_sets_over_seed)/2)
 
     if plot_title != None:
         if plot_title == "episodic_success_rate_smoothed":
@@ -90,7 +90,13 @@ def main():
     plots_to_make = ["episodic_final_dist", "episodic_score", "episodic_success_rate"]#"evaluation_rewards", "task_success_rate"
 
     runs_to_plot = {}
-    runs_to_plot["door_HER"] = [\
+    runs_to_plot["door"] = [\
+        "door_trial_1_her_classifier", \
+        "door_trial_1_her_classifier_unweighted", \
+        "door_trial_1_her_oracle", \
+        "door_trial_1_her_random", \
+    ]
+    """runs_to_plot["door_HER"] = [\
         "door_gs1_0_HER_3e-3_3e-3", \
         "door_gs1_1_HER_3e-3_3e-4", \
         "door_gs1_2_HER_3e-3_3e-5", \
@@ -122,6 +128,12 @@ def main():
         "3e-5_3e-3", \
         "3e-5_3e-4", \
         "3e-5_3e-5", \
+    ]"""
+    titles = [\
+        "CLF", \
+        "CLF UW", \
+        "Oracle", \
+        "Baseline", \
     ]
     '''runs_to_plot["door"] = [\
         "door_baseline_trial_0",\
