@@ -92,7 +92,7 @@ def main():
     runs_to_plot = {}
     runs_to_plot["door"] = [\
         "door_trial_1_her_clf", \
-        "door_trial_1_her_clf_uw", \
+        "door_trial_1_her_uw_clf", \
         "door_trial_1_her_oracle", \
         "door_trial_1_her_random", \
     ]
