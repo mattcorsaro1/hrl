@@ -91,8 +91,8 @@ def main():
 
     runs_to_plot = {}
     runs_to_plot["door"] = [\
-        "door_trial_1_her_classifier", \
-        "door_trial_1_her_classifier_unweighted", \
+        "door_trial_1_her_clf", \
+        "door_trial_1_her_clf_uw", \
         "door_trial_1_her_oracle", \
         "door_trial_1_her_random", \
     ]
