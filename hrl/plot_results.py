@@ -94,7 +94,7 @@ def main():
         "door_trial_1_her_clf", \
         "door_trial_1_her_uw_clf", \
         "door_trial_1_her_oracle", \
-        "door_trial_1_her_random", \
+        "door_trial_1_her_baseline", \
     ]
     """runs_to_plot["door_HER"] = [\
         "door_gs1_0_HER_3e-3_3e-3", \
