@@ -57,7 +57,7 @@ def generatePlot(y_val_sets_over_seed, plot_title, labels, plot_dir_this_obj, ma
         x_vals = list(range(len(y_avg)))
         if smooth_over is not None:
             x_vals = [val + smooth_over for val in x_vals]
-        ax.plot(x_vals, y_avg, label=labels[method_i])
+        ax.plot(x_vals, y_avg, label=labels[method_i] + " {:.3f}".format(sum(y_avg)/len(y_avg)))
         y_err_min = [y_avg[i]-y_err[i] for i in range(len(y_avg))]
         y_err_max = [y_avg[i]+y_err[i] for i in range(len(y_avg))]
         ax.fill_between(x_vals, y_err_min, y_err_max, alpha=0.2)
@@ -71,7 +71,7 @@ def generatePlot(y_val_sets_over_seed, plot_title, labels, plot_dir_this_obj, ma
 
     # Put a legend below current axis
     ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05),
-              fancybox=True, shadow=True, ncol=2)
+              fancybox=True, shadow=True, ncol=3)
 
     if plot_title != None:
         if plot_title == "episodic_success_rate_smoothed":
@@ -130,8 +130,8 @@ def main():
         "3e-5_3e-5", \
     ]"""
     titles = [\
-        "CLF", \
-        "CLF UW", \
+        "Classifier", \
+        "Unweighted Classifier", \
         "Oracle", \
         "Baseline", \
     ]
