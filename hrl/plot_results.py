@@ -136,7 +136,7 @@ def main():
         "3e-5_3e-5", \
     ]"""
     titles = [\
-        "Classifier", \
+        "GARLA", \
         "Unweighted Classifier", \
         "Oracle", \
         "Baseline", \
