@@ -70,8 +70,8 @@ def generatePlot(y_val_sets_over_seed, plot_title, labels, plot_dir_this_obj, ma
                      box.width, box.height * 0.9])
 
     # Put a legend below current axis
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05),
-              fancybox=True, shadow=True, ncol=3)
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1),
+              fancybox=True, shadow=True, ncol=2)
 
     if plot_title != None:
         if plot_title == "episodic_success_rate_smoothed":
@@ -95,6 +95,12 @@ def main():
         "door_trial_1_her_uw_clf", \
         "door_trial_1_her_oracle", \
         "door_trial_1_her_baseline", \
+    ]
+    runs_to_plot["switch"] = [\
+        "switch_trial_2_her_clf", \
+        "switch_trial_2_her_uw_clf", \
+        "switch_trial_2_her_oracle", \
+        "switch_trial_2_her_baseline", \
     ]
     """runs_to_plot["door_HER"] = [\
         "door_gs1_0_HER_3e-3_3e-3", \
